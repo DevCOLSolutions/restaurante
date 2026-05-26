@@ -1,0 +1,7 @@
+export { GlobalManagerDashboardPage } from "./DashboardPage"
+export { TablesPage } from "./TablesPage"
+export { OrdersPage } from "./OrdersPage"
+export { KitchenPage } from "./KitchenPage"
+export { ProfilePage } from "./ProfilePage"
+export { ReportsPage } from "./ReportsPage"
+export { SettingsPage } from "./SettingsPage"
