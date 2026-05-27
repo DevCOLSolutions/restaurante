@@ -3,7 +3,7 @@ import { useLocation, useNavigate } from "react-router-dom"
 import { Card } from "@/shared/ui/Card"
 import { Button } from "@workspace/ui/components/button"
 import { Input } from "@/shared/ui/Input"
-import { ArrowLeft, ArrowUp, Plus, Minus, ShoppingCart, UtensilsCrossed, Search, MessageCircle, Send, Bell, Check } from "lucide-react"
+import { ArrowLeft, ArrowUp, Plus, Minus, UtensilsCrossed, Search, MessageCircle, Send, Bell, Check } from "lucide-react"
 import { formatCurrency } from "@/core/utils"
 
 type MenuItem = { id: string; name: string; price: number; category: string }
