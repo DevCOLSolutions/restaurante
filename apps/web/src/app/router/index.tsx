@@ -16,6 +16,10 @@ import {
   MeseroTablesPage,
   MeseroOrdersPage,
   MeseroReadyPage,
+  OrderCreatePage,
+  OrderAddPage,
+  MeseroProfilePage,
+  ChargePage,
 } from "@/features/mesero/pages"
 import { CocinaLayout } from "@/features/cocina/layouts/DashboardLayout"
 import {
@@ -61,9 +65,12 @@ export const router = createBrowserRouter([
         children: [
           { index: true, element: <MeseroDashboardPage /> },
           { path: "tables", element: <MeseroTablesPage /> },
+          { path: "order-create", element: <OrderCreatePage /> },
+          { path: "order-add", element: <OrderAddPage /> },
           { path: "orders", element: <MeseroOrdersPage /> },
           { path: "ready", element: <MeseroReadyPage /> },
-          { path: "profile", element: <GMProfilePage /> },
+          { path: "charge", element: <ChargePage /> },
+          { path: "profile", element: <MeseroProfilePage /> },
         ],
       },
       // Cocina routes

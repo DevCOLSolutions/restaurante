@@ -5,6 +5,7 @@ import { cn } from "@/shared/lib/utils"
 import { meseroNavItems } from "../navigation"
 import { useAuthStore } from "@/core/auth/store"
 import { FloatingBottomNav } from "../components/FloatingBottomNav"
+import { NotificationDrawer } from "../components/NotificationDrawer"
 
 export function MeseroLayout() {
   const isMobile = useIsMobile()
@@ -29,6 +30,7 @@ export function MeseroLayout() {
         <Outlet />
       </main>
       {isMobile && <FloatingBottomNav />}
+      <NotificationDrawer />
     </div>
   )
 }

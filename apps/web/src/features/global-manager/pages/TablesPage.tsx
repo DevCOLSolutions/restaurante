@@ -21,7 +21,7 @@ export function TablesPage() {
 
   const filters = [
     { value: "all", label: "Todas" },
-    { value: "libre", label: "Libres" },
+    { value: "libre", label: "Disponibles" },
     { value: "ocupada", label: "Ocupadas" },
     { value: "reservada", label: "Reservadas" },
     { value: "limpieza", label: "Limpieza" },
