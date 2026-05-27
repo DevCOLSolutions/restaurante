@@ -42,11 +42,10 @@ export function LoginPage() {
           <p className="mt-1 text-sm text-neutral-500">Sistema de gestión para restaurantes</p>
         </div>
 
-        {appConfig.roleSelector && (
-          <Card className="border-dashed border-neutral-300">
+        <Card>
             <CardContent>
               <p className="mb-3 text-center text-xs font-semibold uppercase tracking-wider text-neutral-500">
-                🧪 Modo Desarrollo - Selecciona un rol
+                Selecciona un rol
               </p>
               <div className="grid grid-cols-2 gap-2">
                 {Object.values(UserRole).map((role) => (
