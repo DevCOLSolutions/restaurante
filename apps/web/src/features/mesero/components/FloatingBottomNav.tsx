@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { cn } from "@/shared/lib/utils"
 import { NavLink, useLocation, useNavigate } from "react-router-dom"
-import { Plus, HouseHeart, UtensilsCrossed, ClipboardList, User, Table2, Check } from "lucide-react"
+import { Plus, HouseHeart, UtensilsCrossed, ClipboardList, User, Table2 } from "lucide-react"
 
 const navItems = [
   { icon: <HouseHeart size={22} />, href: "/app/mesero", label: "Inicio" },

@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { useLocation, useNavigate } from "react-router-dom"
-import { ArrowLeft, User, ChefHat, ShoppingCart, Banknote, CreditCard, Printer, Mail, FileText, Check, Percent, Plus, Minus } from "lucide-react"
+import { ArrowLeft, User, ShoppingCart, Banknote, CreditCard, Printer, Mail, FileText, Check, Plus, Minus } from "lucide-react"
 import { formatCurrency } from "@/core/utils"
 import { ordersByTable, waiterByTable } from "../tables/mocks/data"
 

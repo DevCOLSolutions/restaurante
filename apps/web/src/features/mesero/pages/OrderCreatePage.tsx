@@ -163,7 +163,7 @@ export function OrderCreatePage() {
 
         {/* Step indicator */}
         <div className="flex gap-2">
-          {["pedido", "ajustar", "confirmar"].map((s, i) => (
+          {["pedido", "ajustar", "confirmar"].map((s) => (
             <div key={s} className="flex items-center gap-2">
               <div className={`h-1.5 rounded-full transition-all ${step === s ? "w-6 bg-white" : s === "pedido" || s === "ajustar" ? "w-1.5 bg-white/30" : "w-1.5 bg-white/30"}`} />
             </div>

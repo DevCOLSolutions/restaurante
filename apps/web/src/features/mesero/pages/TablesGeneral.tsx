@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom"
 import { Card } from "@/shared/ui/Card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@workspace/ui/components/tabs"
 import { formatCurrency } from "@/core/utils"
-import { Sandwich, Search, X, Clock, User, UtensilsCrossed, Plus, ShoppingCart } from "lucide-react";
+import { X, Clock, User, UtensilsCrossed, Plus, ShoppingCart } from "lucide-react";
 
 const zones = [
     { id: "salon", label: "Salón Principal" },

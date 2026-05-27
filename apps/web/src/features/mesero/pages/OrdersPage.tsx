@@ -4,7 +4,7 @@ import { ArrowLeft, Bell, ClipboardList, ChefHat, Clock, User, Table2, MessageCi
 import { formatCurrency } from "@/core/utils"
 import { useNotificationStore } from "../stores/notificationStore"
 
-type ItemStatus = "pendiente" | "en_preparacion" | "listo" | "entregado" | "cancelado"
+type ItemStatus = "pendiente" | "enviado" | "en_preparacion" | "listo" | "entregado" | "cancelado"
 
 interface OrderItem {
   id: string
@@ -63,6 +63,7 @@ const statusLabel: Record<string, string> = {
 
 const itemStatusDot: Record<string, string> = {
   pendiente: "bg-neutral-300",
+  enviado: "bg-blue-400",
   en_preparacion: "bg-purple-400",
   listo: "bg-emerald-400",
   entregado: "bg-blue-400",

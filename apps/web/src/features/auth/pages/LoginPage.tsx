@@ -1,7 +1,6 @@
 import { useNavigate } from "react-router-dom"
 import { useAuthStore } from "@/core/auth/store"
 import { UserRole } from "@/core/auth/types"
-import { appConfig } from "@/core/config"
 import { Card, CardContent } from "@/shared/ui/Card"
 import { UtensilsCrossed } from "lucide-react"
 
@@ -61,7 +60,6 @@ export function LoginPage() {
               </div>
             </CardContent>
           </Card>
-        )}
 
         
       </div>
