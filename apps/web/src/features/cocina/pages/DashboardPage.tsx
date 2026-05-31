@@ -1,7 +1,5 @@
 import { Card, CardContent } from "@/shared/ui/Card"
 import { Badge } from "@/shared/ui/Badge"
-import { MetricCard } from "@/features/global-manager/components/MetricCard"
-import { ClipboardList, ChefHat } from "lucide-react"
 import { Button } from "@workspace/ui/components/button"
 
 const mockKitchenOrders = [
@@ -50,9 +48,23 @@ export function CocinaDashboardPage() {
         <p className="text-sm text-neutral-500">Órdenes de cocina en tiempo real</p>
       </div>
 
-      <div className="grid grid-cols-2 gap-3">
-        <MetricCard title="Pendientes" value={pending.length} icon={<ClipboardList size={20} />} />
-        <MetricCard title="En Preparación" value={preparing.length} icon={<ChefHat size={20} />} />
+      <div className="rounded-2xl bg-neutral-900 text-white px-4 py-3 flex items-center justify-between">
+        <div className="flex items-center gap-4">
+          <div>
+            <p className="text-[10px] text-neutral-400 uppercase tracking-wide">Pedidos pendientes</p>
+            <p className="text-lg font-bold">{pending.length}</p>
+          </div>
+          <div className="w-px h-8 bg-neutral-700" />
+          <div>
+            <p className="text-[10px] text-neutral-400 uppercase tracking-wide">En preparación</p>
+            <p className="text-lg font-bold">{preparing.length}</p>
+          </div>
+          <div className="w-px h-8 bg-neutral-700" />
+          <div>
+            <p className="text-[10px] text-neutral-400 uppercase tracking-wide">Mesas activas</p>
+            <p className="text-lg font-bold">{new Set(mockKitchenOrders.map((o) => o.tableNumber)).size}</p>
+          </div>
+        </div>
       </div>
 
       {preparing.length > 0 && (

@@ -1,10 +1,8 @@
-import { LayoutDashboard, UtensilsCrossed, ClipboardList, ChefHat, Users, Settings } from "lucide-react"
+import { House, UtensilsCrossed, Users, ChefHat } from "lucide-react"
 
 export const globalManagerNavItems = [
-  { icon: <LayoutDashboard size={20} />, label: "Dashboard", href: "/app/global-manager" },
-  { icon: <UtensilsCrossed size={20} />, label: "Mesas", href: "/app/global-manager/tables" },
-  { icon: <ClipboardList size={20} />, label: "Órdenes", href: "/app/global-manager/orders" },
+  { icon: <House size={20} />, label: "Inicio", href: "/app/global-manager" },
+  { icon: <UtensilsCrossed size={20} />, label: "Menú", href: "/app/global-manager/menu" },
+  { icon: <Users size={20} />, label: "Meseros", href: "/app/global-manager/meseros" },
   { icon: <ChefHat size={20} />, label: "Cocina", href: "/app/global-manager/kitchen" },
-  { icon: <Users size={20} />, label: "Reportes", href: "/app/global-manager/reports" },
-  { icon: <Settings size={20} />, label: "Configuración", href: "/app/global-manager/settings" },
 ]

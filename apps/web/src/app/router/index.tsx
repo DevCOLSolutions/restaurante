@@ -1,5 +1,6 @@
 import { createBrowserRouter, Navigate } from "react-router-dom"
 import { LoginPage } from "@/features/auth/pages/LoginPage"
+import { RegisterPage } from "@/features/auth/pages/RegisterPage"
 import { GlobalManagerLayout } from "@/features/global-manager/layouts/DashboardLayout"
 import {
   GlobalManagerDashboardPage,
@@ -9,6 +10,8 @@ import {
   ProfilePage as GMProfilePage,
   ReportsPage,
   SettingsPage,
+  MenuPage,
+  MeserosPage,
 } from "@/features/global-manager/pages"
 import { MeseroLayout } from "@/features/mesero/layouts/DashboardLayout"
 import {
@@ -44,6 +47,10 @@ export const router = createBrowserRouter([
         path: "login",
         element: <LoginPage />,
       },
+      {
+        path: "register",
+        element: <RegisterPage />,
+      },
       // Global Manager routes
       {
         path: "app/global-manager",
@@ -51,8 +58,10 @@ export const router = createBrowserRouter([
         children: [
           { index: true, element: <GlobalManagerDashboardPage /> },
           { path: "tables", element: <TablesPage /> },
+          { path: "menu", element: <MenuPage /> },
           { path: "orders", element: <OrdersPage /> },
           { path: "kitchen", element: <KitchenPage /> },
+          { path: "meseros", element: <MeserosPage /> },
           { path: "reports", element: <ReportsPage /> },
           { path: "settings", element: <SettingsPage /> },
           { path: "profile", element: <GMProfilePage /> },
