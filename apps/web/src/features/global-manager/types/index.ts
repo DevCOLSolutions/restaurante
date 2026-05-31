@@ -5,6 +5,7 @@ export interface TableInfo {
   number: number
   status: TableStatus
   seats: number
+  zone?: string
   time?: string
   orderId?: string
   x: number

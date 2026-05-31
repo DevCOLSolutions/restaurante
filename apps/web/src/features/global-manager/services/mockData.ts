@@ -1,14 +1,14 @@
 import type { TableInfo, OrderInfo } from "../types"
 
 const mockTables: TableInfo[] = [
-  { id: "t1", number: 1, status: "ocupada", seats: 4, time: "45 min", orderId: "ord-001", x: 5, y: 10 },
-  { id: "t2", number: 2, status: "ocupada", seats: 2, time: "20 min", orderId: "ord-002", x: 5, y: 35 },
-  { id: "t3", number: 3, status: "libre", seats: 6, x: 5, y: 60 },
-  { id: "t4", number: 4, status: "libre", seats: 2, x: 50, y: 10 },
-  { id: "t5", number: 5, status: "reservada", seats: 4, time: "19:30", x: 50, y: 35 },
-  { id: "t6", number: 6, status: "ocupada", seats: 4, time: "60 min", orderId: "ord-003", x: 50, y: 60 },
-  { id: "t7", number: 7, status: "limpieza", seats: 2, x: 30, y: 85 },
-  { id: "t8", number: 8, status: "libre", seats: 8, x: 65, y: 85 },
+  { id: "t1", number: 1, status: "ocupada", seats: 4, time: "45 min", orderId: "ord-001", zone: "Salón Principal", x: 5, y: 10 },
+  { id: "t2", number: 2, status: "ocupada", seats: 2, time: "20 min", orderId: "ord-002", zone: "Salón Principal", x: 5, y: 35 },
+  { id: "t3", number: 3, status: "libre", seats: 6, zone: "Salón Principal", x: 5, y: 60 },
+  { id: "t4", number: 4, status: "libre", seats: 2, zone: "Salón Principal", x: 50, y: 10 },
+  { id: "t5", number: 5, status: "reservada", seats: 4, time: "19:30", zone: "Terraza", x: 50, y: 35 },
+  { id: "t6", number: 6, status: "ocupada", seats: 4, time: "60 min", orderId: "ord-003", zone: "Terraza", x: 50, y: 60 },
+  { id: "t7", number: 7, status: "limpieza", seats: 2, zone: "Barra", x: 30, y: 85 },
+  { id: "t8", number: 8, status: "libre", seats: 8, zone: "Barra", x: 65, y: 85 },
 ]
 
 const mockOrdersList: OrderInfo[] = [

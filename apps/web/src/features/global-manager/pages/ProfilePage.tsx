@@ -9,6 +9,24 @@ export function ProfilePage() {
 
   return (
     <div className="space-y-4 p-4">
+      <div className="rounded-2xl bg-neutral-900 text-white px-4 py-3 flex items-center justify-between">
+        <div className="flex items-center gap-4">
+          <div>
+            <p className="text-[10px] text-neutral-400 uppercase tracking-wide">Pedidos pendientes</p>
+            <p className="text-lg font-bold">0</p>
+          </div>
+          <div className="w-px h-8 bg-neutral-700" />
+          <div>
+            <p className="text-[10px] text-neutral-400 uppercase tracking-wide">En preparación</p>
+            <p className="text-lg font-bold">0</p>
+          </div>
+          <div className="w-px h-8 bg-neutral-700" />
+          <div>
+            <p className="text-[10px] text-neutral-400 uppercase tracking-wide">Mesas activas</p>
+            <p className="text-lg font-bold">0</p>
+          </div>
+        </div>
+      </div>
       <div>
         <h1 className="text-xl font-bold text-neutral-900">Perfil</h1>
         <p className="text-sm text-neutral-500">Tu información de usuario</p>
