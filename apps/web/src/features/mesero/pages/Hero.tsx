@@ -1,8 +1,7 @@
 // Hero.tsx
-import { Sun, Store, Bell, Building2 } from "lucide-react";
+import { Store, Bell, Building2 } from "lucide-react";
 import { useNotificationStore } from "../stores/notificationStore";
 import { useMe } from "@/hooks/useMe";
-import { useZonas } from "@/features/global-manager/hooks/useZonas";
 
 const days = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
 const months = ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"];
