@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { Plus, Pencil, Trash2, PlusCircle } from "lucide-react"
-import { HeroMesero } from "../components/Hero"
+import { HeroAdministrador } from "../components/Hero"
 import { useAuthStore } from "@/core/auth/store"
 import { formatCurrency } from "@/core/utils"
 
@@ -101,7 +101,7 @@ export function MenuPage() {
 
   return (
     <div className="space-y-4">
-      <HeroMesero nombre={name} initials={initials} />
+      <HeroAdministrador />
 
       <div className="px-4">
         <div className="overflow-x-auto scrollbar-none">

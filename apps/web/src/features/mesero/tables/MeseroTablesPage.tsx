@@ -2,7 +2,8 @@ import { useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { ArrowLeft, Bell, Eye, MoreVertical, Table2, ArrowRightLeft, Move } from "lucide-react"
 import { useNotificationStore } from "../stores/notificationStore"
-import { zones } from "./constants/zones"
+import { useZonas } from "@/features/global-manager/hooks/useZonas"
+import { zones as staticZones } from "./constants/zones"
 import { filters } from "./constants/filters"
 import { tablesByZone, getMyTables } from "./mocks/data"
 import { useTableSelection } from "./hooks/useTableSelection"
@@ -10,6 +11,7 @@ import { StatusFilterBar } from "./components/StatusFilterBar"
 import { ZoneTabs } from "./components/ZoneTabs"
 import { TableCard } from "./components/TableCard"
 import { TableDrawer } from "./components/TableDrawer"
+import type { Zone } from "./types"
 
 const currentUser = "Andrés"
 
@@ -18,6 +20,11 @@ export function MeseroTablesPage() {
   const [statusFilter, setStatusFilter] = useState("all")
   const [openDropdown, setOpenDropdown] = useState<number | null>(null)
   const { selectedTable, selectTable, clearSelection } = useTableSelection()
+  const { data: apiZonas, isLoading: isLoadingZonas } = useZonas()
+
+  const zones: Zone[] = apiZonas && apiZonas.length > 0
+    ? apiZonas.map((z) => ({ id: z.id, label: z.nombre }))
+    : staticZones
 
   const myTables = getMyTables(currentUser)
 
@@ -88,17 +95,23 @@ export function MeseroTablesPage() {
           onChange={setStatusFilter}
         />
 
-        <ZoneTabs
-          zones={zones}
-          getTablesForZone={getTablesForZone}
-          renderTable={(table) => (
-            <TableCard
-              table={table}
-              currentUser={currentUser}
-              onSelect={selectTable}
-            />
-          )}
-        />
+        {isLoadingZonas ? (
+          <div className="flex justify-center py-4">
+            <div className="h-6 w-6 animate-spin rounded-full border-2 border-neutral-200 border-t-neutral-900" />
+          </div>
+        ) : (
+          <ZoneTabs
+            zones={zones}
+            getTablesForZone={getTablesForZone}
+            renderTable={(table) => (
+              <TableCard
+                table={table}
+                currentUser={currentUser}
+                onSelect={selectTable}
+              />
+            )}
+          />
+        )}
 
         {myTables.length > 0 && (
           <section className="mt-6">

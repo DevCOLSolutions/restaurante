@@ -1,6 +1,6 @@
 import { DollarSign, ClipboardList, Grid3x3, TrendingUp, Settings2, Plus, Trash2 } from "lucide-react"
 import { useState } from "react"
-import { HeroMesero } from "@/features/global-manager/components/Hero"
+import { HeroAdministrador } from "@/features/global-manager/components/Hero"
 import { MesasEstado } from "@/features/global-manager/components/MesasEstado"
 import { useAuthStore } from "@/core/auth/store"
 import { formatCurrency } from "@/core/utils"
@@ -46,7 +46,7 @@ export function AdminSucursalDashboardPage() {
 
   return (
     <div className="space-y-4">
-      <HeroMesero nombre={name} initials={initials} mesasActivas={mesasActivas} />
+      <HeroAdministrador />
 
       <div className="px-4 flex flex-col gap-3">
         <div className="rounded-2xl bg-white border border-neutral-200 shadow-sm p-4 flex items-center justify-between">

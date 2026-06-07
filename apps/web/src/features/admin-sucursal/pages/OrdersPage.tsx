@@ -1,6 +1,6 @@
 import { Card, CardContent } from "@/shared/ui/Card"
 import { Badge } from "@/shared/ui/Badge"
-import { HeroMesero } from "@/features/global-manager/components/Hero"
+import { HeroAdministrador } from "@/features/global-manager/components/Hero"
 import { useAuthStore } from "@/core/auth/store"
 import { Clock, ChefHat } from "lucide-react"
 
@@ -24,7 +24,7 @@ export function OrdersPage() {
 
   return (
     <div className="space-y-4">
-      <HeroMesero nombre={name} initials={initials} />
+      <HeroAdministrador />
       <div className="px-4 space-y-4">
         <div className="grid grid-cols-2 gap-3">
           <Card>

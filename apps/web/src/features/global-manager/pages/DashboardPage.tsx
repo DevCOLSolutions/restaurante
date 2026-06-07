@@ -1,14 +1,12 @@
 import { Plus, Grid3x3, TrendingUp, DollarSign, ClipboardList, Settings2, Trash2 } from "lucide-react"
-import { HeroMesero } from "../components/Hero"
+import { HeroAdministrador } from "../components/Hero"
 import { MesasEstado } from "../components/MesasEstado"
 import { useState } from "react"
 import type { TableInfo } from "../types"
 import { getRestaurantTables, mockOrders } from "../services"
 import { formatCurrency } from "@/core/utils"
-import { useAuthStore } from "@/core/auth/store"
 
 export function GlobalManagerDashboardPage() {
-  const user = useAuthStore((s) => s.user)
   const [tables, setTables] = useState<TableInfo[]>(getRestaurantTables())
   const [zones, setZones] = useState([{ name: "Salón Principal", description: "Área principal del restaurante" }, { name: "Terraza", description: "Área al aire libre" }, { name: "Barra", description: "Área de barra y cocina" }])
   const [activeZone, setActiveZone] = useState("Salón Principal")
@@ -21,13 +19,6 @@ export function GlobalManagerDashboardPage() {
   const [newTableStatus, setNewTableStatus] = useState<TableInfo["status"]>("libre")
   const orders = mockOrders()
 
-  const name = user?.name ?? "Administrador"
-  const initials = name
-    .split(" ")
-    .map((w) => w[0])
-    .join("")
-    .slice(0, 2)
-    .toUpperCase()
 
   const zoneTables = tables.filter((t) => t.zone === activeZone)
 
@@ -54,7 +45,7 @@ export function GlobalManagerDashboardPage() {
 
   return (
     <div className="space-y-4">
-      <HeroMesero nombre={name} initials={initials} mesasActivas={mesasActivas} />
+      <HeroAdministrador/>
 
       {/* Top stats */}
       <div className="px-4 flex flex-col gap-3">

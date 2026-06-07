@@ -4,7 +4,7 @@ import { Badge } from "@/shared/ui/Badge"
 import { MetricCard } from "@/features/global-manager/components/MetricCard"
 import { ChefHat, Clock } from "lucide-react"
 import { Button } from "@workspace/ui/components/button"
-import { HeroMesero } from "@/features/global-manager/components/Hero"
+import { HeroAdministrador } from "@/features/global-manager/components/Hero"
 import { useAuthStore } from "@/core/auth/store"
 
 interface KitchenArea { name: string; description: string }
@@ -37,7 +37,7 @@ export function KitchenPage() {
 
   return (
     <div className="space-y-4">
-      <HeroMesero nombre={name} initials={initials} />
+      <HeroAdministrador />
       <div className="px-4 space-y-4">
         <div className="overflow-x-auto scrollbar-none">
           <div className="flex gap-2 min-w-max pb-1">

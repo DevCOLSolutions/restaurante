@@ -1,6 +1,6 @@
 import { useState, useMemo } from "react"
 import { Settings2, Trash2, Plus, Mail, Lock, AtSign, KeyRound } from "lucide-react"
-import { HeroMesero } from "@/features/global-manager/components/Hero"
+import { HeroAdministrador } from "@/features/global-manager/components/Hero"
 import { useAuthStore } from "@/core/auth/store"
 
 function generateSuggestions(fullName: string): string[] {
@@ -50,7 +50,7 @@ export function MeserosPage() {
 
   return (
     <div className="space-y-4">
-      <HeroMesero nombre={name} initials={initials} />
+      <HeroAdministrador />
 
       <div className="px-4">
         <div className="overflow-x-auto scrollbar-none">

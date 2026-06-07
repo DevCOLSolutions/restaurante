@@ -11,4 +11,14 @@ export default defineConfig({
       "@": path.resolve(__dirname, "./src"),
     },
   },
+  server: {
+    proxy: {
+      "/api": {
+        target: "https://backendrest2026.onrender.com",
+        changeOrigin: true,  // ← esto faltaba
+      secure: true,
+       cookieDomainRewrite: "localhost"
+      },
+    },
+  },
 })

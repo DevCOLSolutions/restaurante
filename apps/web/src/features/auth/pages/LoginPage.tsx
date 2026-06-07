@@ -2,8 +2,11 @@ import { useState } from "react"
 import { Link, useNavigate } from "react-router-dom"
 import { useAuthStore } from "@/core/auth/store"
 import { UserRole } from "@/core/auth/types"
+import { getDashboardPathForRole } from "@/core/auth/utils"
 import { appConfig } from "@/core/config"
-import { UtensilsCrossed, Mail, Lock, Eye, EyeOff } from "lucide-react"
+import { useLogin } from "@/features/auth/hooks/useLogin"
+import { ApiRequestError } from "@/lib/apiClient"
+import { UtensilsCrossed, Mail, Lock, Eye, EyeOff, Loader2 } from "lucide-react"
 import { Card, CardContent } from "@/shared/ui/Card"
 
 const roleLabels: Record<string, string> = {
@@ -23,25 +26,27 @@ const roleIcons: Record<string, string> = {
 }
 
 export function LoginPage() {
-  const setRole = useAuthStore((s) => s.setRole)
+  const login = useAuthStore((s) => s.login)
   const navigate = useNavigate()
-  const [email, setEmail] = useState("")
+  const [username, setUsername] = useState("")
   const [password, setPassword] = useState("")
   const [showPassword, setShowPassword] = useState(false)
   const [error, setError] = useState("")
+  const loginMutation = useLogin()
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault()
-    if (!email || !password) {
+    if (!username || !password) {
       setError("Completa todos los campos")
       return
     }
-    navigate("/login")
+    setError("")
+    loginMutation.mutate({ username, password })
   }
 
   const handleDevLogin = (role: UserRole) => {
-    setRole(role)
-    navigate(`/app/${getRouteForRole(role)}`)
+    login({ id: `dev-${role}`, name: `Developer (${role})`, email: `dev@${role.toLowerCase()}.rest`, role, restaurantId: "rest-001" })
+    navigate(getDashboardPathForRole(role))
   }
 
   return (
@@ -57,15 +62,15 @@ export function LoginPage() {
 
         <form onSubmit={handleLogin} className="space-y-4">
           <div>
-            <label className="text-xs font-medium text-neutral-500 mb-1 block">Correo electrónico</label>
+            <label className="text-xs font-medium text-neutral-500 mb-1 block">Usuario</label>
             <div className="relative">
               <Mail size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400" />
               <input
-                type="email"
-                value={email}
-                onChange={(e) => { setEmail(e.target.value); setError("") }}
+                type="text"
+                value={username}
+                onChange={(e) => { setUsername(e.target.value); setError("") }}
                 className="w-full rounded-xl border border-neutral-200 bg-white py-2.5 pl-9 pr-3 text-sm outline-none focus:border-neutral-400 transition-colors"
-                placeholder="correo@ejemplo.com"
+                placeholder="usuario"
               />
             </div>
           </div>
@@ -91,13 +96,22 @@ export function LoginPage() {
             </div>
           </div>
 
-          {error && <p className="text-xs text-rose-500">{error}</p>}
+          {(error || loginMutation.error) && (
+            <p className="text-xs text-rose-500">
+              {error ||
+                (loginMutation.error instanceof ApiRequestError
+                  ? (loginMutation.error.body as { message?: string })?.message || loginMutation.error.message
+                  : "Error al iniciar sesión")}
+            </p>
+          )}
 
           <button
             type="submit"
-            className="w-full rounded-xl bg-neutral-900 py-2.5 text-sm font-medium text-white hover:bg-neutral-800 transition-colors"
+            disabled={loginMutation.isPending}
+            className="w-full rounded-xl bg-neutral-900 py-2.5 text-sm font-medium text-white hover:bg-neutral-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
           >
-            Iniciar sesión
+            {loginMutation.isPending && <Loader2 size={16} className="animate-spin" />}
+            {loginMutation.isPending ? "Iniciando sesión..." : "Iniciar sesión"}
           </button>
 
           <p className="text-center text-xs text-neutral-500">
@@ -134,13 +148,3 @@ export function LoginPage() {
   )
 }
 
-function getRouteForRole(role: UserRole): string {
-  switch (role) {
-    case UserRole.GlobalManager: return "global-manager"
-    case UserRole.AdminSucursal: return "admin-sucursal"
-    case UserRole.Mesero: return "mesero"
-    case UserRole.AreaCocina: return "cocina"
-    case UserRole.ConsumidorFinal: return "consumidor"
-    default: return "global-manager"
-  }
-}

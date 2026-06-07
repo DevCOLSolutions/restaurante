@@ -18,8 +18,7 @@ function generateSuggestions(fullName: string): string[] {
   if (last) s.push(`${first}.${last}${rand()}`)
   return [...new Set(s)]
 }
-import { HeroMesero } from "../components/Hero"
-import { useAuthStore } from "@/core/auth/store"
+import { HeroAdministrador } from "../components/Hero"
 
 const categories = ["MESEROS", "TURNO", "DESCANSO"]
 
@@ -41,7 +40,6 @@ const initialMeseros: Mesero[] = [
 ]
 
 export function MeserosPage() {
-  const user = useAuthStore((s) => s.user)
   const [activeCategory, setActiveCategory] = useState("MESEROS")
   const [meseros, setMeseros] = useState<Mesero[]>(initialMeseros)
   const [showManage, setShowManage] = useState(false)
@@ -54,19 +52,12 @@ export function MeserosPage() {
   const [changingPass, setChangingPass] = useState<string | null>(null)
   const [changingPassValue, setChangingPassValue] = useState("")
 
-  const name = user?.name ?? "Administrador"
-  const initials = name
-    .split(" ")
-    .map((w) => w[0])
-    .join("")
-    .slice(0, 2)
-    .toUpperCase()
 
   const filtered = activeCategory === "MESEROS" ? meseros : meseros.filter((m) => m.status === activeCategory)
 
   return (
     <div className="space-y-4">
-      <HeroMesero nombre={name} initials={initials} />
+      <HeroAdministrador />
 
       <div className="px-4">
         <div className="overflow-x-auto scrollbar-none">

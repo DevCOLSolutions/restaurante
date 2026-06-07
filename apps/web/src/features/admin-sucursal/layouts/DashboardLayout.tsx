@@ -5,11 +5,11 @@ import { useIsMobile } from "@/shared/hooks/useMediaQuery"
 import { cn } from "@/shared/lib/utils"
 import { adminSucursalNavItems } from "../navigation"
 import { adminSucursalMobileNav } from "../navigation/mobile"
-import { useAuthStore } from "@/core/auth/store"
+import { useLogout } from "@/features/auth/hooks/useLogout"
 
 export function AdminSucursalLayout() {
   const isMobile = useIsMobile()
-  const logout = useAuthStore((s) => s.logout)
+  const logout = useLogout()
 
   return (
     <div className="flex min-h-screen bg-neutral-50">
@@ -21,7 +21,7 @@ export function AdminSucursalLayout() {
               icon: <span className="text-sm">⚙</span>,
               label: "Salir",
               href: "/login",
-              onClick: () => logout(),
+              onClick: logout,
             },
           ]}
         />

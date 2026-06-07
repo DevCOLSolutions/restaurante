@@ -1,25 +1,16 @@
 // Hero.tsx
-import { Sun, Store, Bell } from "lucide-react";
+import { Sun, Store, Bell, Building2 } from "lucide-react";
 import { useNotificationStore } from "../stores/notificationStore";
+import { useMe } from "@/hooks/useMe";
+import { useZonas } from "@/features/global-manager/hooks/useZonas";
 
 const days = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
 const months = ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"];
 
-interface HeroMeseroProps {
-    nombre?: string;
-    initials?: string;
-    turno?: string;
-    zona?: string;
 
-}
-
-export function HeroMesero({
-    nombre = "Andrés Felipe",
-    initials = "AF",
-    turno = "Turno diario",
-    zona = "Restaurante",
-
-}: HeroMeseroProps) {
+export function HeroMesero() {
+    const { data: user } = useMe()
+    
     const now = new Date();
     const h = now.getHours();
     const saludo = h < 12 ? "Buenos días," : h < 19 ? "Buenas tardes," : "Buenas noches,";
@@ -31,22 +22,30 @@ export function HeroMesero({
             <div className="flex items-start justify-between mb-4">
                 <div>
                     <p className="text-xs text-white/50">{saludo}</p>
-                    <h1 className="text-2xl font-medium text-white tracking-tight leading-tight">{nombre}</h1>
+                    <h1 className="text-2xl font-medium text-white tracking-tight leading-tight">{user?.data?.fullName
+  ?.split(' ')
+  .slice(0, 2)
+  .map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase())
+  .join(' ')}</h1>
                 </div>
                 <div className="h-10 w-10 rounded-full bg-white text-neutral-900 flex items-center justify-center text-sm font-medium shrink-0">
-                    {initials}
+                    {user?.data?.fullName
+  ?.split(' ')
+  .slice(0, 2)
+  .map(w => w.charAt(0).toUpperCase())
+  .join('')}
                 </div>
             </div>
 
             {/* Pills */}
             <div className="flex gap-2 mb-4">
                 <span className="inline-flex items-center gap-1.5 bg-white text-neutral-900 rounded-full px-3 py-1 text-xs font-medium">
-                    <Sun size={12} />
-                    {turno}
+                    <Building2 size={12} />
+                    {user?.data?.restauranteNombre}
                 </span>
                 <span className="inline-flex items-center gap-1.5 bg-white/10 border border-white/10 text-white/70 rounded-full px-3 py-1 text-xs">
                     <Store size={12} />
-                    {zona}
+                    Sede: {user?.data?.sucursalNombre}
                 </span>
                 <button onClick={() => useNotificationStore.getState().toggle()} className="relative inline-flex items-center bg-white/10 border border-white/10 text-white/70 rounded-full px-3 py-1 text-xs hover:bg-white/20 transition-colors">
                     <Bell size={12} />

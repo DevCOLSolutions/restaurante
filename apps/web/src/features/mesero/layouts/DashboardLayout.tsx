@@ -3,13 +3,14 @@ import { Sidebar } from "@/shared/components/Sidebar"
 import { useIsMobile } from "@/shared/hooks/useMediaQuery"
 import { cn } from "@/shared/lib/utils"
 import { meseroNavItems } from "../navigation"
-import { useAuthStore } from "@/core/auth/store"
+import { useLogout } from "@/features/auth/hooks/useLogout"
 import { FloatingBottomNav } from "../components/FloatingBottomNav"
 import { NotificationDrawer } from "../components/NotificationDrawer"
 
 export function MeseroLayout() {
   const isMobile = useIsMobile()
-  const logout = useAuthStore((s) => s.logout)
+  const logout = useLogout()
+  
 
   return (
     <div className="flex min-h-screen bg-white">
@@ -21,7 +22,7 @@ export function MeseroLayout() {
               icon: <span className="text-sm">⚙</span>,
               label: "Salir",
               href: "/login",
-              onClick: () => logout(),
+              onClick: logout,
             },
           ]}
         />

@@ -1,6 +1,10 @@
 import { createBrowserRouter, Navigate } from "react-router-dom"
 import { LoginPage } from "@/features/auth/pages/LoginPage"
 import { RegisterPage } from "@/features/auth/pages/RegisterPage"
+import { LogoutPage } from "@/features/auth/pages/LogoutPage"
+import { ProtectedRoute } from "@/components/ProtectedRoute"
+import { GuestRoute } from "@/components/GuestRoute"
+import { UserRole } from "@/core/auth/types"
 import { GlobalManagerLayout } from "@/features/global-manager/layouts/DashboardLayout"
 import {
   GlobalManagerDashboardPage,
@@ -12,6 +16,8 @@ import {
   SettingsPage,
   MenuPage,
   MeserosPage,
+  SucursalesPage,
+  SucursalDetailPage,
 } from "@/features/global-manager/pages"
 import { AdminSucursalLayout } from "@/features/admin-sucursal/layouts/DashboardLayout"
 import {
@@ -56,16 +62,32 @@ export const router = createBrowserRouter([
       },
       {
         path: "login",
-        element: <LoginPage />,
+        element: (
+          <GuestRoute>
+            <LoginPage />
+          </GuestRoute>
+        ),
       },
       {
         path: "register",
-        element: <RegisterPage />,
+        element: (
+          <GuestRoute>
+            <RegisterPage />
+          </GuestRoute>
+        ),
+      },
+      {
+        path: "logout",
+        element: <LogoutPage />,
       },
       // Global Manager routes
       {
         path: "app/global-manager",
-        element: <GlobalManagerLayout />,
+        element: (
+          <ProtectedRoute allowedRoles={[UserRole.GlobalManager]}>
+            <GlobalManagerLayout />
+          </ProtectedRoute>
+        ),
         children: [
           { index: true, element: <GlobalManagerDashboardPage /> },
           { path: "tables", element: <TablesPage /> },
@@ -73,6 +95,8 @@ export const router = createBrowserRouter([
           { path: "orders", element: <OrdersPage /> },
           { path: "kitchen", element: <KitchenPage /> },
           { path: "meseros", element: <MeserosPage /> },
+          { path: "sucursales", element: <SucursalesPage /> },
+          { path: "sucursales/:id", element: <SucursalDetailPage /> },
           { path: "reports", element: <ReportsPage /> },
           { path: "settings", element: <SettingsPage /> },
           { path: "profile", element: <GMProfilePage /> },
@@ -81,7 +105,11 @@ export const router = createBrowserRouter([
       // Admin Sucursal routes
       {
         path: "app/admin-sucursal",
-        element: <AdminSucursalLayout />,
+        element: (
+          <ProtectedRoute allowedRoles={[UserRole.AdminSucursal]}>
+            <AdminSucursalLayout />
+          </ProtectedRoute>
+        ),
         children: [
           { index: true, element: <AdminSucursalDashboardPage /> },
           { path: "tables", element: <AdminTablesPage /> },
@@ -96,7 +124,11 @@ export const router = createBrowserRouter([
       // Mesero routes
       {
         path: "app/mesero",
-        element: <MeseroLayout />,
+        element: (
+          <ProtectedRoute allowedRoles={[UserRole.Mesero]}>
+            <MeseroLayout />
+          </ProtectedRoute>
+        ),
         children: [
           { index: true, element: <MeseroDashboardPage /> },
           { path: "tables", element: <MeseroTablesPage /> },
@@ -111,7 +143,11 @@ export const router = createBrowserRouter([
       // Cocina routes
       {
         path: "app/cocina",
-        element: <CocinaLayout />,
+        element: (
+          <ProtectedRoute allowedRoles={[UserRole.AreaCocina]}>
+            <CocinaLayout />
+          </ProtectedRoute>
+        ),
         children: [
           { index: true, element: <CocinaDashboardPage /> },
           { path: "pending", element: <PendingPage /> },
@@ -122,7 +158,11 @@ export const router = createBrowserRouter([
       // Consumidor routes
       {
         path: "app/consumidor",
-        element: <ConsumidorLayout />,
+        element: (
+          <ProtectedRoute allowedRoles={[UserRole.ConsumidorFinal]}>
+            <ConsumidorLayout />
+          </ProtectedRoute>
+        ),
         children: [
           { index: true, element: <ConsumidorDashboardPage /> },
           { path: "profile", element: <GMProfilePage /> },
