@@ -1,7 +1,6 @@
 import { useState, useMemo } from "react"
 import { Settings2, Trash2, Plus, Mail, Lock, AtSign, KeyRound } from "lucide-react"
 import { HeroAdministrador } from "@/features/global-manager/components/Hero"
-import { useAuthStore } from "@/core/auth/store"
 
 function generateSuggestions(fullName: string): string[] {
   const parts = fullName.trim().toLowerCase().split(/\s+/).filter(Boolean)
@@ -31,7 +30,6 @@ const initialMeseros: Mesero[] = [
 const categories = ["MESEROS", "TURNO", "DESCANSO"]
 
 export function MeserosPage() {
-  const user = useAuthStore((s) => s.user)
   const [activeCategory, setActiveCategory] = useState("MESEROS")
   const [meseros, setMeseros] = useState<Mesero[]>(initialMeseros)
   const [showManage, setShowManage] = useState(false)
@@ -44,8 +42,6 @@ export function MeserosPage() {
   const [changingPass, setChangingPass] = useState<string | null>(null)
   const [changingPassValue, setChangingPassValue] = useState("")
 
-  const name = user?.name ?? "Administrador"
-  const initials = name.split(" ").map((w) => w[0]).join("").slice(0, 2).toUpperCase()
   const filtered = activeCategory === "MESEROS" ? meseros : meseros.filter((m) => m.status === activeCategory)
 
   return (

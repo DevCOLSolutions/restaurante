@@ -1,7 +1,6 @@
 import { useState } from "react"
 import { Plus, Pencil, Trash2, PlusCircle } from "lucide-react"
 import { HeroAdministrador } from "../components/Hero"
-import { useAuthStore } from "@/core/auth/store"
 import { formatCurrency } from "@/core/utils"
 
 interface Category {
@@ -41,7 +40,6 @@ const initialItems: MenuItem[] = [
 ]
 
 export function MenuPage() {
-  const user = useAuthStore((s) => s.user)
   const [activeCategory, setActiveCategory] = useState("MENU")
   const [items, setItems] = useState<MenuItem[]>(initialItems)
   const [categories, setCategories] = useState<Category[]>(defaultCategories)
@@ -51,13 +49,6 @@ export function MenuPage() {
   const [catForm, setCatForm] = useState({ name: "", description: "" })
   const [form, setForm] = useState({ name: "", description: "", price: "", category: "MENU", area: "Zona de cocción" })
 
-  const name = user?.name ?? "Administrador"
-  const initials = name
-    .split(" ")
-    .map((w) => w[0])
-    .join("")
-    .slice(0, 2)
-    .toUpperCase()
 
   const catNames = categories.map((c) => c.name)
   const filtered = activeCategory === "MENU" ? items : items.filter((i) => i.category === activeCategory)

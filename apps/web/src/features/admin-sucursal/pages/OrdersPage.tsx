@@ -1,7 +1,6 @@
 import { Card, CardContent } from "@/shared/ui/Card"
 import { Badge } from "@/shared/ui/Badge"
 import { HeroAdministrador } from "@/features/global-manager/components/Hero"
-import { useAuthStore } from "@/core/auth/store"
 import { Clock, ChefHat } from "lucide-react"
 
 interface KitchenItem { name: string; qty: number; category: string; area: string }
@@ -15,9 +14,6 @@ const pendingOrders: KitchenOrder[] = [
 ]
 
 export function OrdersPage() {
-  const user = useAuthStore((s) => s.user)
-  const name = user?.name ?? "Administrador"
-  const initials = name.split(" ").map((w) => w[0]).join("").slice(0, 2).toUpperCase()
 
   const urgent = pendingOrders.filter((o) => o.priority === "urgent")
   const normal = pendingOrders.filter((o) => o.priority === "normal")

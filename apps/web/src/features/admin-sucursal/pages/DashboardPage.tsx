@@ -2,13 +2,11 @@ import { DollarSign, ClipboardList, Grid3x3, TrendingUp, Settings2, Plus, Trash2
 import { useState } from "react"
 import { HeroAdministrador } from "@/features/global-manager/components/Hero"
 import { MesasEstado } from "@/features/global-manager/components/MesasEstado"
-import { useAuthStore } from "@/core/auth/store"
 import { formatCurrency } from "@/core/utils"
 import { getRestaurantTables, mockOrders } from "../services"
 import type { TableInfo } from "@/features/global-manager/types"
 
 export function AdminSucursalDashboardPage() {
-  const user = useAuthStore((s) => s.user)
   const [tables, setTables] = useState<TableInfo[]>(getRestaurantTables())
   const [zones, setZones] = useState([{ name: "Salón Principal", description: "Área principal" }, { name: "Terraza", description: "Área al aire libre" }])
   const [activeZone, setActiveZone] = useState("Salón Principal")
@@ -24,8 +22,7 @@ export function AdminSucursalDashboardPage() {
   const [newTableStatus, setNewTableStatus] = useState<TableInfo["status"]>("libre")
   const orders = mockOrders()
 
-  const name = user?.name ?? "Administrador"
-  const initials = name.split(" ").map((w) => w[0]).join("").slice(0, 2).toUpperCase()
+
 
   const zoneTables = tables.filter((t) => t.zone === activeZone)
   const totalSales = orders.filter((o) => o.status === "paid" || o.status === "served").reduce((sum, o) => sum + o.total, 0)

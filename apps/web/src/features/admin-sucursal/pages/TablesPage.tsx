@@ -2,16 +2,12 @@ import { useState } from "react"
 import { TableItem } from "@/features/global-manager/components/TableItem"
 import { TableModal } from "@/features/global-manager/components/TableModal"
 import { HeroAdministrador } from "@/features/global-manager/components/Hero"
-import { useAuthStore } from "@/core/auth/store"
 import type { TableInfo } from "@/features/global-manager/types"
 import { getRestaurantTables } from "../services"
 
 export function TablesPage() {
-  const user = useAuthStore((s) => s.user)
   const [tables] = useState<TableInfo[]>(getRestaurantTables())
   const [selectedTable, setSelectedTable] = useState<TableInfo | null>(null)
-  const name = user?.name ?? "Administrador"
-  const initials = name.split(" ").map((w) => w[0]).join("").slice(0, 2).toUpperCase()
 
   return (
     <div className="space-y-4">

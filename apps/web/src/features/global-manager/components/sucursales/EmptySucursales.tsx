@@ -11,7 +11,7 @@ export function EmptySucursales({ onCreate }: EmptySucursalesProps) {
         <Store size={28} />
       </div>
       <p className="text-sm font-semibold text-neutral-700 mb-1">No hay sucursales</p>
-      <p className="text-xs text-neutral-400 mb-6 max-w-[220px]">
+      <p className="text-xs text-neutral-400 mb-6 max-w-55">
         Crea tu primera sucursal para empezar a gestionar tu restaurante.
       </p>
       <button

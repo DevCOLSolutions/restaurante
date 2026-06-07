@@ -36,13 +36,13 @@ export function useApiMutation<TData, TBody = unknown>(
         body: body ? JSON.stringify(body) : undefined,
       }),
     ...options,
-    onSuccess: (data, variables, context) => {
+    onSuccess: (data, variables, context, mutation) => {
       if (options?.invalidateKeys) {
         for (const key of options.invalidateKeys) {
           queryClient.invalidateQueries({ queryKey: key })
         }
       }
-      options?.onSuccess?.(data, variables, context)
+      options?.onSuccess?.(data, variables, context, mutation)
     },
   })
 }

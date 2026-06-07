@@ -5,7 +5,6 @@ import { MetricCard } from "@/features/global-manager/components/MetricCard"
 import { ChefHat, Clock } from "lucide-react"
 import { Button } from "@workspace/ui/components/button"
 import { HeroAdministrador } from "@/features/global-manager/components/Hero"
-import { useAuthStore } from "@/core/auth/store"
 
 interface KitchenArea { name: string; description: string }
 const defaultKitchenAreas: KitchenArea[] = [
@@ -23,12 +22,10 @@ const kitchenOrders: { id: string; table: number; items: KitchenItem[]; status: 
 ]
 
 export function KitchenPage() {
-  const user = useAuthStore((s) => s.user)
   const [activeArea, setActiveArea] = useState("Zona de cocción")
   const kitchenAreas = defaultKitchenAreas
 
-  const name = user?.name ?? "Administrador"
-  const initials = name.split(" ").map((w) => w[0]).join("").slice(0, 2).toUpperCase()
+  
 
   const filteredOrders = kitchenOrders.filter((o) => o.items.some((i) => i.area === activeArea))
   const pending = filteredOrders.filter((o) => o.status === "pending")

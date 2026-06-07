@@ -10,17 +10,10 @@ import {
   Store,
   BadgeCheck,
   BadgeX,
-  CalendarDays,
 } from "lucide-react"
 import { useSucursal } from "../hooks/useSucursal"
 import { HeroSucursalesDetails } from "../components/sucursales/HeroSucursalesDetails"
 
-const ROLE_LABEL: Record<string, string> = {
-  administrador: "Administrador",
-  cajero: "Cajero",
-  mesero: "Mesero",
-  cocina: "Cocina",
-}
 
 const ORDENES_MOCK = [
   { id: "1", mesa: 3, estado: "en_cocina", items: [{}, {}] },
