@@ -1,5 +1,6 @@
 export const UserRole = {
   GlobalManager: "GlobalManager",
+  AdminSucursal: "AdminSucursal",
   Mesero: "Mesero",
   AreaCocina: "AreaCocina",
   ConsumidorFinal: "ConsumidorFinal",

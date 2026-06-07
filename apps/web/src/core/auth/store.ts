@@ -55,6 +55,8 @@ function getPermissionsForRole(role: UserRole): string[] {
   switch (role) {
     case UserRole.GlobalManager:
       return [...base, "view:dashboard", "view:tables", "view:orders", "view:reports", "view:cocina", "manage:users", "manage:menu", "manage:settings", "manage:tables"]
+    case UserRole.AdminSucursal:
+      return [...base, "view:dashboard", "view:tables", "view:orders", "view:cocina", "manage:users", "manage:menu", "manage:tables"]
     case UserRole.Mesero:
       return [...base, "view:dashboard", "view:tables", "view:orders", "view:cocina", "create:order", "edit:order", "close:order"]
     case UserRole.AreaCocina:
