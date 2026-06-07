@@ -11,23 +11,29 @@ interface AuthState {
   setToken: (token: string) => void
 }
 
+const memoryStorage: Record<string, string> = {}
+
 const safeStorage = {
-  getItem: (key: string) => {
+  getItem: (key: string): string | null => {
     try {
-      return localStorage.getItem(key)
+      return window.localStorage.getItem(key)
     } catch {
-      return null
+      return memoryStorage[key] ?? null
     }
   },
-  setItem: (key: string, value: string) => {
+  setItem: (key: string, value: string): void => {
     try {
-      localStorage.setItem(key, value)
-    } catch {}
+      window.localStorage.setItem(key, value)
+    } catch {
+      memoryStorage[key] = value
+    }
   },
-  removeItem: (key: string) => {
+  removeItem: (key: string): void => {
     try {
-      localStorage.removeItem(key)
-    } catch {}
+      window.localStorage.removeItem(key)
+    } catch {
+      delete memoryStorage[key]
+    }
   },
 }
 
@@ -37,17 +43,12 @@ export const useAuthStore = create<AuthState>()(
       token: null,
       user: null,
       isAuthenticated: false,
-
-      login: (token: string, user: User) =>
-        set({ token, user, isAuthenticated: true }),
-
-      logout: () =>
-        set({ token: null, user: null, isAuthenticated: false }),
-
-      setToken: (token: string) => set({ token }),
+      login: (token, user) => set({ token, user, isAuthenticated: true }),
+      logout: () => set({ token: null, user: null, isAuthenticated: false }),
+      setToken: (token) => set({ token }),
     }),
     {
-      name: "rest2025-auth-token",
+      name: "rest2025-auth",
       storage: createJSONStorage(() => safeStorage),
       partialize: (state) => ({
         token: state.token,
