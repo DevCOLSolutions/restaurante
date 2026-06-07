@@ -8,6 +8,7 @@ interface NavItem {
   label: string
   href: string
   onClick?: () => void
+  end?: boolean
 }
 
 interface BottomNavigationProps {
@@ -46,6 +47,7 @@ export function BottomNavigation({ items, className }: BottomNavigationProps) {
             <NavLink
               key={i}
               to={item.href}
+              end={item.end}
               className={({ isActive }) =>
                 cn(
                   "flex flex-col items-center gap-0.5 rounded-xl px-3 py-2 text-xs font-medium transition-all duration-200",

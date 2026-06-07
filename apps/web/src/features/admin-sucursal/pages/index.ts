@@ -1,0 +1,8 @@
+export { AdminSucursalDashboardPage } from "./DashboardPage"
+export { MeserosPage } from "./MeserosPage"
+export { KitchenPage } from "./KitchenPage"
+export { ProfilePage } from "./ProfilePage"
+export { TablesPage } from "./TablesPage"
+export { OrdersPage } from "./OrdersPage"
+export { ReportsPage } from "./ReportsPage"
+export { SettingsPage } from "./SettingsPage"

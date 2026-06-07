@@ -8,6 +8,7 @@ import { Card, CardContent } from "@/shared/ui/Card"
 
 const roleLabels: Record<string, string> = {
   GlobalManager: "Global Manager",
+  AdminSucursal: "Admin Sucursal",
   Mesero: "Mesero",
   AreaCocina: "Área Cocina",
   ConsumidorFinal: "Consumidor Final",
@@ -15,6 +16,7 @@ const roleLabels: Record<string, string> = {
 
 const roleIcons: Record<string, string> = {
   GlobalManager: "👔",
+  AdminSucursal: "🏢",
   Mesero: "🍽️",
   AreaCocina: "👨‍🍳",
   ConsumidorFinal: "👤",
@@ -135,6 +137,7 @@ export function LoginPage() {
 function getRouteForRole(role: UserRole): string {
   switch (role) {
     case UserRole.GlobalManager: return "global-manager"
+    case UserRole.AdminSucursal: return "admin-sucursal"
     case UserRole.Mesero: return "mesero"
     case UserRole.AreaCocina: return "cocina"
     case UserRole.ConsumidorFinal: return "consumidor"

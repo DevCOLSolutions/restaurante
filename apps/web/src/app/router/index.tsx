@@ -13,6 +13,17 @@ import {
   MenuPage,
   MeserosPage,
 } from "@/features/global-manager/pages"
+import { AdminSucursalLayout } from "@/features/admin-sucursal/layouts/DashboardLayout"
+import {
+  AdminSucursalDashboardPage,
+  MeserosPage as AdminMeserosPage,
+  KitchenPage as AdminKitchenPage,
+  ProfilePage as AdminProfilePage,
+  TablesPage as AdminTablesPage,
+  OrdersPage as AdminOrdersPage,
+  ReportsPage as AdminReportsPage,
+  SettingsPage as AdminSettingsPage,
+} from "@/features/admin-sucursal/pages"
 import { MeseroLayout } from "@/features/mesero/layouts/DashboardLayout"
 import {
   MeseroDashboardPage,
@@ -61,6 +72,21 @@ export const router = createBrowserRouter([
           { path: "reports", element: <ReportsPage /> },
           { path: "settings", element: <SettingsPage /> },
           { path: "profile", element: <GMProfilePage /> },
+        ],
+      },
+      // Admin Sucursal routes
+      {
+        path: "app/admin-sucursal",
+        element: <AdminSucursalLayout />,
+        children: [
+          { index: true, element: <AdminSucursalDashboardPage /> },
+          { path: "tables", element: <AdminTablesPage /> },
+          { path: "orders", element: <AdminOrdersPage /> },
+          { path: "kitchen", element: <AdminKitchenPage /> },
+          { path: "meseros", element: <AdminMeserosPage /> },
+          { path: "reports", element: <AdminReportsPage /> },
+          { path: "settings", element: <AdminSettingsPage /> },
+          { path: "profile", element: <AdminProfilePage /> },
         ],
       },
       // Mesero routes
