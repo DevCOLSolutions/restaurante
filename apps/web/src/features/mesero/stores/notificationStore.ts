@@ -1,29 +1,14 @@
 import { create } from "zustand"
-
-export interface Notification {
-  id: string
-  type: "order_ready" | "order_sent" | "order_cancelled" | "info"
-  title: string
-  description: string
-  tableNumber?: number
-  time: string
-  read: boolean
-}
-
-const mockNotifications: Notification[] = [
-  { id: "n1", type: "order_ready", title: "Orden lista", description: "Los platillos de la mesa 08 están listos para entregar", tableNumber: 8, time: "Hace 1 min", read: false },
-  { id: "n2", type: "order_sent", title: "Orden enviada", description: "La orden de la mesa 05 se envió a cocina", tableNumber: 5, time: "Hace 5 min", read: false },
-  { id: "n3", type: "info", title: "Adición a la orden", description: "Se agregaron productos a la mesa 03", tableNumber: 3, time: "Hace 8 min", read: false },
-  { id: "n4", type: "order_cancelled", title: "Producto cancelado", description: "Un cliente canceló un artículo de la mesa 02", tableNumber: 2, time: "Hace 15 min", read: false },
-  { id: "n5", type: "order_ready", title: "Orden lista", description: "Los platillos de la mesa 06 están listos para entregar", tableNumber: 6, time: "Hace 20 min", read: true },
-  { id: "n6", type: "order_sent", title: "Orden enviada", description: "La orden de la mesa 10 se envió a cocina", tableNumber: 10, time: "Hace 30 min", read: true },
-]
+import type { Notificacion } from "@/types/api"
 
 interface NotificationStore {
   open: boolean
-  notifications: Notification[]
+  notificaciones: Notificacion[]
+  unread: number
   setOpen: (open: boolean) => void
   toggle: () => void
+  setNotificaciones: (notificaciones: Notificacion[]) => void
+  setUnread: (count: number) => void
   markRead: (id: string) => void
   markAllRead: () => void
   remove: (id: string) => void
@@ -32,20 +17,27 @@ interface NotificationStore {
 
 export const useNotificationStore = create<NotificationStore>((set, get) => ({
   open: false,
-  notifications: mockNotifications,
+  notificaciones: [],
+  unread: 0,
   setOpen: (open) => set({ open }),
   toggle: () => set((s) => ({ open: !s.open })),
+  setNotificaciones: (notificaciones) => set({ notificaciones }),
+  setUnread: (count) => set({ unread: count }),
   markRead: (id) =>
     set((s) => ({
-      notifications: s.notifications.map((n) => (n.id === id ? { ...n, read: true } : n)),
+      notificaciones: s.notificaciones.map((n) =>
+        n.id === id ? { ...n, leida: true } : n
+      ),
+      unread: Math.max(0, s.unread - 1),
     })),
   markAllRead: () =>
     set((s) => ({
-      notifications: s.notifications.map((n) => ({ ...n, read: true })),
+      notificaciones: s.notificaciones.map((n) => ({ ...n, leida: true })),
+      unread: 0,
     })),
   remove: (id) =>
     set((s) => ({
-      notifications: s.notifications.filter((n) => n.id !== id),
+      notificaciones: s.notificaciones.filter((n) => n.id !== id),
     })),
-  unreadCount: () => get().notifications.filter((n) => !n.read).length,
+  unreadCount: () => get().unread,
 }))

@@ -1,68 +1,107 @@
 import { Card, CardContent } from "@/shared/ui/Card"
-import { Badge } from "@/shared/ui/Badge"
 import { Button } from "@workspace/ui/components/button"
+import { Loading } from "@/shared/ui/Loading"
+import { Badge } from "@/shared/ui/Badge"
+import { useProductosMiArea } from "../hooks/useProductosMiArea"
+import { useCambiarEstadoOrden } from "../hooks/useCambiarEstadoOrden"
+import { useCocinaSignalr } from "../hooks/useCocinaSignalr"
+import type { ProductoAreaCocina } from "@/types/api"
 
-const mockKitchenOrders = [
-  {
-    id: "k1",
-    tableNumber: 1,
-    items: [
-      { name: "Tacos al Pastor", quantity: 3, notes: "Sin cebolla" },
-      { name: "Guacamole", quantity: 1 },
-    ],
-    status: "preparing" as const,
-    time: "10 min",
-    priority: "urgent" as const,
-  },
-  {
-    id: "k2",
-    tableNumber: 6,
-    items: [
-      { name: "Hamburguesa Clásica", quantity: 2, notes: "Término medio" },
-      { name: "Papas Fritas", quantity: 2 },
-    ],
-    status: "pending" as const,
-    time: "15 min",
-    priority: "normal" as const,
-  },
-  {
-    id: "k3",
-    tableNumber: 2,
-    items: [
-      { name: "Enchiladas Verdes", quantity: 2 },
-    ],
-    status: "pending" as const,
-    time: "20 min",
-    priority: "normal" as const,
-  },
-]
+function ProductoCard({
+  p,
+  onCambiarEstado,
+  isChanging,
+}: {
+  p: ProductoAreaCocina
+  onCambiarEstado: (id: string, estado: string) => void
+  isChanging: boolean
+}) {
 
-export function CocinaDashboardPage() {
-  const pending = mockKitchenOrders.filter((o) => o.status === "pending")
-  const preparing = mockKitchenOrders.filter((o) => o.status === "preparing")
+  const isPending = p.estadoProducto === "pendiente"
+  const isPreparing = p.estadoProducto === "preparando" || p.estadoProducto === "en_preparacion"
 
   return (
-    <div className="space-y-4 p-4">
+    <Card key={p.id} className={isPreparing ? "border-amber-200 bg-amber-50/50" : ""}>
+      <CardContent>
+        <div className="flex items-center justify-between mb-2">
+          <span className="font-bold text-neutral-900">Mesa {p.mesaNumero}</span>
+          <Badge variant={isPending ? "outline" : "warning"}>
+            {isPending ? "Pendiente" : "Preparando"}
+          </Badge>
+        </div>
+        <div className="flex items-center justify-between gap-2 mb-1">
+          <span className="text-neutral-800 font-medium">{p.cantidad}x {p.itemMenuNombre}</span>
+        </div>
+        {p.notasProducto && (
+          <p className="text-xs text-neutral-500 mb-3">{p.notasProducto}</p>
+        )}
+        {isPending && (
+          <Button
+            className="w-full rounded-xl"
+            onClick={() => onCambiarEstado(p.id, "en_preparacion")}
+            disabled={isChanging}
+          >
+            {isChanging ? "Actualizando..." : "Iniciar Preparación"}
+          </Button>
+        )}
+        {isPreparing && (
+          <Button
+            className="w-full rounded-xl bg-amber-500 hover:bg-amber-600 text-white"
+            onClick={() => onCambiarEstado(p.id, "listo")}
+            disabled={isChanging}
+          >
+            {isChanging ? "Actualizando..." : "Marcar como Listo"}
+          </Button>
+        )}
+      </CardContent>
+    </Card>
+  )
+}
+
+export function CocinaDashboardPage() {
+  useCocinaSignalr()
+  const { data: productos, isLoading } = useProductosMiArea()
+  const { mutate: cambiarEstado, isPending: isChanging } = useCambiarEstadoOrden()
+
+  const items = productos ?? []
+  const pending = items.filter((p) => p.estadoProducto === "pendiente")
+  const preparing = items.filter((p) => p.estadoProducto === "preparando" || p.estadoProducto === "en_preparacion")
+  const activeTables = new Set(items.map((p) => p.mesaNumero)).size
+
+  if (isLoading) {
+    return (
+      <div className="space-y-4">
+        <div>
+          <h2 className="text-lg font-bold text-neutral-900">Dashboard</h2>
+          <p className="text-sm text-neutral-500">Órdenes de cocina en tiempo real</p>
+        </div>
+        <Loading />
+      </div>
+    )
+  }
+
+  return (
+    <div className="space-y-4">
       <div>
-        <h1 className="text-xl font-bold text-neutral-900">Cocina</h1>
+        <h2 className="text-lg font-bold text-neutral-900">Dashboard</h2>
         <p className="text-sm text-neutral-500">Órdenes de cocina en tiempo real</p>
       </div>
 
       <div className="rounded-2xl bg-neutral-900 text-white px-4 py-3 flex items-center justify-between">
         <div className="flex items-center gap-4">
           <div>
-            <p className="text-[10px] text-neutral-400 uppercase tracking-wide">Pedidos pendientes</p>
+            <p className="text-[10px] text-neutral-400 uppercase tracking-wide">Pendientes</p>
             <p className="text-lg font-bold">{pending.length}</p>
           </div>
           <div className="w-px h-8 bg-neutral-700" />
           <div>
-            <p className="text-[10px] text-neutral-400 uppercase tracking-wide">En preparación</p>
+            <p className="text-[10px] text-neutral-400 uppercase tracking-wide">Preparando</p>
             <p className="text-lg font-bold">{preparing.length}</p>
           </div>
           <div className="w-px h-8 bg-neutral-700" />
           <div>
             <p className="text-[10px] text-neutral-400 uppercase tracking-wide">Mesas activas</p>
-            <p className="text-lg font-bold">{new Set(mockKitchenOrders.map((o) => o.tableNumber)).size}</p>
+            <p className="text-lg font-bold">{activeTables}</p>
           </div>
         </div>
       </div>
@@ -71,26 +110,13 @@ export function CocinaDashboardPage() {
         <div>
           <h2 className="mb-3 text-base font-semibold text-amber-600">En Preparación</h2>
           <div className="space-y-3">
-            {preparing.map((order) => (
-              <Card key={order.id} className="border-amber-200 bg-amber-50/50">
-                <CardContent>
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="font-bold text-neutral-900">Mesa {order.tableNumber}</span>
-                    <Badge variant="warning">{order.time}</Badge>
-                  </div>
-                  <div className="space-y-1 mb-3">
-                    {order.items.map((item, i) => (
-                      <div key={i} className="text-sm">
-                        <span className="text-neutral-800 font-medium">{item.quantity}x {item.name}</span>
-                        {item.notes && <span className="text-neutral-500 ml-1">({item.notes})</span>}
-                      </div>
-                    ))}
-                  </div>
-                  <Button className="w-full rounded-xl bg-amber-500 hover:bg-amber-600 text-white">
-                    Marcar como Listo
-                  </Button>
-                </CardContent>
-              </Card>
+            {preparing.map((p) => (
+              <ProductoCard
+                key={p.id}
+                p={p}
+                onCambiarEstado={(id, estado) => cambiarEstado({ id, estado })}
+                isChanging={isChanging}
+              />
             ))}
           </div>
         </div>
@@ -98,29 +124,20 @@ export function CocinaDashboardPage() {
 
       <div>
         <h2 className="mb-3 text-base font-semibold text-neutral-800">Pendientes</h2>
-        <div className="space-y-3">
-          {pending.map((order) => (
-            <Card key={order.id}>
-              <CardContent>
-                <div className="flex items-center justify-between mb-2">
-                  <span className="font-bold text-neutral-900">Mesa {order.tableNumber}</span>
-                  <Badge variant="outline">{order.time}</Badge>
-                </div>
-                <div className="space-y-1 mb-3">
-                  {order.items.map((item, i) => (
-                    <div key={i} className="text-sm">
-                      <span className="text-neutral-800 font-medium">{item.quantity}x {item.name}</span>
-                      {item.notes && <span className="text-neutral-500 ml-1">({item.notes})</span>}
-                    </div>
-                  ))}
-                </div>
-                <Button className="w-full rounded-xl">
-                  Iniciar Preparación
-                </Button>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
+        {pending.length === 0 ? (
+          <p className="text-sm text-neutral-500">No hay productos pendientes</p>
+        ) : (
+          <div className="space-y-3">
+            {pending.map((p) => (
+              <ProductoCard
+                key={p.id}
+                p={p}
+                onCambiarEstado={(id, estado) => cambiarEstado({ id, estado })}
+                isChanging={isChanging}
+              />
+            ))}
+          </div>
+        )}
       </div>
     </div>
   )

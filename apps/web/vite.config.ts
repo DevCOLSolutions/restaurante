@@ -15,9 +15,15 @@ export default defineConfig({
     proxy: {
       "/api": {
         target: "https://backendrest2026.onrender.com",
-        changeOrigin: true,  // ← esto faltaba
-      secure: true,
-       cookieDomainRewrite: "localhost"
+        changeOrigin: true,
+        secure: true,
+        cookieDomainRewrite: "localhost",
+      },
+      "/hub": {
+        target: "https://localhost:7007",
+        changeOrigin: true,
+        ws: true,
+        secure: true,
       },
     },
   },

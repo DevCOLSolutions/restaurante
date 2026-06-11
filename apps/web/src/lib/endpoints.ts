@@ -12,13 +12,17 @@ export const ENDPOINTS = {
     CREATE: "/ordenes",
     UPDATE: (id: string) => `/ordenes/${id}`,
     DELETE: (id: string) => `/ordenes/${id}`,
+    POR_MESERO: (meseroId: string) => `/ordenes/por-mesero?meseroId=${meseroId}`,
+    POR_MESA: (mesaId: string) => `/mesas/${mesaId}/ordenes`,
+    CERRAR: (id: string) => `/ordenes/${id}/cerrar`,
+    CAMBIAR_ESTADO_PRODUCTO: (id: string) => `/ordenes-productos/${id}/estado`,
   },
   MESAS: {
     LIST: "/mesas",
     GET: (id: string) => `/mesas/${id}`,
     CREATE: "/mesas",
     UPDATE: (id: string) => `/mesas/${id}`,
-    DELETE: (id: string) => `/mesas/${id}`,
+    CAMBIAR_ESTADO: (id: string) => `/mesas/${id}/estado`,
   },
   PRODUCTOS: {
     LIST: "/productos",
@@ -49,6 +53,9 @@ export const ENDPOINTS = {
     LIST: "/cocina",
     GET: (id: string) => `/cocina/${id}`,
     UPDATE: (id: string) => `/cocina/${id}`,
+    PRODUCTOS_MI_AREA: "/ordenes/productos/mi-area",
+    PRODUCTOS_POR_AREA: (sucursalId: string, areaCocinaId: string) =>
+      `/ordenes/productos-por-area?sucursalId=${sucursalId}&areaCocinaId=${areaCocinaId}`,
   },
   REPORTES: {
     LIST: "/reportes",
@@ -60,5 +67,19 @@ export const ENDPOINTS = {
     CREATE: "/usuarios",
     UPDATE: (id: string) => `/usuarios/${id}`,
     DELETE: (id: string) => `/usuarios/${id}`,
+  },
+  MENU: {
+    CATEGORIAS: "/menu/categorias",
+    ITEMS: "/menu/items",
+  },
+  DASHBOARD: {
+    MESAS: "/dashboard/mesas",
+  },
+  NOTIFICACIONES: {
+    LIST: "/notificaciones",
+    GET: (id: string) => `/notificaciones/${id}`,
+    UNREAD_COUNT: "/notificaciones/no-leidas/count",
+    MARK_READ: (id: string) => `/notificaciones/${id}/leer`,
+    MARK_ALL_READ: "/notificaciones/leer-todas",
   },
 } as const

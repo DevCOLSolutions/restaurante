@@ -8,6 +8,7 @@ import { useZonas } from "@/features/global-manager/hooks/useZonas"
 import { useMesas } from "@/features/global-manager/hooks/useMesas"
 import type { Mesa } from "@/types/api"
 
+
 type StatusConfig = {
     label: string
     dot: string
@@ -39,9 +40,11 @@ const filters = [
     { value: "reservada", label: "Reservadas" },
 ]
 
-export function MeseroTablesPage() {
+export function MeseroTablesComponent() {
+    
     const navigate = useNavigate()
     const { data: apiZonas, isLoading: isLoadingZonas } = useZonas()
+    
     const { data: mesas, isLoading: isLoadingMesas } = useMesas()
     const zonas = apiZonas?.map((z) => ({ id: z.id, label: z.nombre })) ?? []
     const [statusFilter, setStatusFilter] = useState("disponible")
@@ -64,7 +67,7 @@ export function MeseroTablesPage() {
             <section>
                 <div className="flex items-center justify-between mb-3">
                     <h2 className="text-sm font-semibold tracking-wide">Mesas</h2>
-
+                    
                     <div className="flex items-center gap-4 px-0.5">
                         {Object.entries(statusConfig).map(([key, cfg]) => (
                             <div key={key} className="flex items-center gap-1.5">

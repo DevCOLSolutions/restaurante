@@ -1,7 +1,8 @@
 import { useState } from "react"
 import { cn } from "@/shared/lib/utils"
 import { NavLink, useLocation, useNavigate } from "react-router-dom"
-import { Plus, HouseHeart, UtensilsCrossed, ClipboardList, User, Table2 } from "lucide-react"
+import { Plus, HouseHeart, UtensilsCrossed, ClipboardList, User, Users } from "lucide-react"
+import { useMesas } from "@/features/global-manager/hooks/useMesas"
 
 const navItems = [
   { icon: <HouseHeart size={22} />, href: "/app/mesero", label: "Inicio" },
@@ -11,17 +12,13 @@ const navItems = [
   { icon: <User size={22} />, href: "/app/mesero/profile", label: "Perfil" },
 ]
 
-const tables = [
-  { number: 1, people: 2, status: "libre" }, { number: 2, people: 4, status: "ocupada" }, { number: 3, people: 6, status: "libre" },
-  { number: 4, people: 2, status: "libre" }, { number: 5, people: 4, status: "ocupada" }, { number: 6, people: 2, status: "ocupada" },
-  { number: 7, people: 8, status: "libre" }, { number: 8, people: 4, status: "ocupada" }, { number: 9, people: 2, status: "reservada" },
-  { number: 10, people: 1, status: "libre" }, { number: 11, people: 4, status: "libre" }, { number: 12, people: 2, status: "ocupada" },
-]
-
 export function FloatingBottomNav() {
   const pathname = useLocation().pathname
   const navigate = useNavigate()
+  const { data: mesas } = useMesas()
   const [drawerOpen, setDrawerOpen] = useState(false)
+
+  const disponibles = mesas?.filter((m) => m.estado === "disponible") ?? []
 
   const openDrawer = () => {
     setDrawerOpen(true)
@@ -33,9 +30,9 @@ export function FloatingBottomNav() {
     document.body.style.overflow = ""
   }
 
-  const selectTable = (number: number, people: number) => {
+  const selectTable = (mesa: (typeof disponibles)[number]) => {
     closeDrawer()
-    navigate("/app/mesero/order-create", { state: { table: number, people } })
+    navigate("/app/mesero/order-create", { state: { mesa } })
   }
 
   return (
@@ -83,32 +80,58 @@ export function FloatingBottomNav() {
         </div>
       </nav>
 
-      {/* Drawer - select table */}
+      {/* Drawer — seleccionar mesa */}
       {drawerOpen && (
         <div className="fixed inset-0 z-50 flex items-end">
           <div className="fixed inset-0 bg-black/40 backdrop-blur-sm" onClick={closeDrawer} />
           <div className="relative z-10 max-h-[70vh] w-full overflow-y-auto rounded-t-2xl bg-white p-5 pb-8 shadow-2xl" style={{ animation: "slideUp 0.25s ease-out" }}>
-            <div className="mb-1 flex items-center justify-between">
-              <h2 className="text-lg font-semibold text-neutral-900">Nueva orden</h2>
+            <div className="flex items-center justify-between mb-5">
+              <div>
+                <p className="text-base font-semibold text-neutral-900">Nueva orden</p>
+                <p className="text-sm text-neutral-500">{disponibles.length} mesas disponibles</p>
+              </div>
               <button onClick={closeDrawer} className="rounded-full p-1.5 text-neutral-400 hover:bg-neutral-100 transition-colors">
                 <Plus size={20} className="rotate-45" />
               </button>
             </div>
-            <p className="text-sm text-neutral-500 mb-4">Mesas disponibles ({tables.filter((t) => t.status === "libre").length})</p>
-            <div className="grid grid-cols-3 gap-2">
-              {tables.filter((t) => t.status === "libre").map((t) => (
-                <button
-                  key={t.number}
-                  onClick={() => selectTable(t.number, t.people)}
-                  className="flex flex-col items-center gap-1.5 rounded-xl border border-neutral-200 bg-white px-3 py-3 hover:border-neutral-400 hover:bg-neutral-50 active:scale-95 transition-all"
+
+            <div className="space-y-2">
+              {disponibles.map((mesa) => (
+                <div
+                  key={mesa.id}
+                  className="flex items-center gap-3 rounded-xl border border-emerald-200/60 bg-emerald-50/40 px-4 py-3"
                 >
-                  <span className="flex items-center justify-center w-8 h-8 rounded-full bg-neutral-100 text-neutral-600">
-                    <Table2 size={15} />
-                  </span>
-                  <span className="text-sm font-semibold text-neutral-900">Mesa {String(t.number).padStart(2, "0")}</span>
-                  <span className="text-[10px] text-neutral-400">{t.people} {t.people === 1 ? "persona" : "personas"}</span>
-                </button>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2">
+                      <span className="text-sm font-semibold text-neutral-900">Mesa {String(mesa.numero).padStart(2, "0")}</span>
+                      <span className="text-xs text-neutral-400">— {mesa.nombre}</span>
+                    </div>
+                    <div className="flex items-center gap-2 mt-0.5">
+                      <span className="flex items-center gap-1 text-[11px] text-neutral-500">
+                        <Users size={11} />
+                        {mesa.capacidad} {mesa.capacidad === 1 ? "persona" : "personas"}
+                      </span>
+                      <span className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700">
+                        Disponible
+                      </span>
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => selectTable(mesa)}
+                    className="flex items-center gap-1 rounded-lg bg-emerald-600 px-3.5 py-2 text-xs font-medium text-white hover:bg-emerald-700 transition-colors"
+                  >
+                    <Plus size={13} />
+                    Tomar pedido
+                  </button>
+                </div>
               ))}
+
+              {disponibles.length === 0 && (
+                <div className="flex flex-col items-center justify-center py-12 text-center">
+                  <p className="text-sm font-medium text-neutral-500">No hay mesas disponibles</p>
+                  <p className="text-xs text-neutral-400 mt-1">Todas las mesas están ocupadas o reservadas</p>
+                </div>
+              )}
             </div>
           </div>
         </div>

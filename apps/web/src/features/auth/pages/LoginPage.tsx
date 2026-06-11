@@ -13,7 +13,7 @@ const roleLabels: Record<string, string> = {
   GlobalManager: "Global Manager",
   AdminSucursal: "Admin Sucursal",
   Mesero: "Mesero",
-  AreaCocina: "Área Cocina",
+  Cocinero: "Cocinero",
   ConsumidorFinal: "Consumidor Final",
 }
 
@@ -21,7 +21,7 @@ const roleIcons: Record<string, string> = {
   GlobalManager: "👔",
   AdminSucursal: "🏢",
   Mesero: "🍽️",
-  AreaCocina: "👨‍🍳",
+  Cocinero: "👨‍🍳",
   ConsumidorFinal: "👤",
 }
 

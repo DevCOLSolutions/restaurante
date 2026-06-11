@@ -1,49 +1,40 @@
-import { useState, useCallback, useEffect } from "react"
+import { useState, useCallback, useEffect, useMemo } from "react"
 import { useLocation, useNavigate } from "react-router-dom"
 import { Card } from "@/shared/ui/Card"
 import { Input } from "@/shared/ui/Input"
 import { Button } from "@workspace/ui/components/button"
 import { ArrowLeft, ArrowUp, Plus, Minus, UtensilsCrossed, Search, MessageCircle, Check, Send, Bell } from "lucide-react"
 import { formatCurrency } from "@/core/utils"
+import { useCategorias } from "@/features/mesero/hooks/useCategorias"
+import { useMenuItems } from "@/features/mesero/hooks/useMenuItems"
+import { useCreateOrden } from "@/features/mesero/hooks/useCreateOrden"
+import type { Mesa, MenuProducto } from "@/types/api"
 
-type MenuItem = { id: string; name: string; price: number; category: string }
-type Category = { id: string; label: string }
-
-interface OrderItem extends MenuItem {
-  quantity: number
-  comment: string
-}
-
-const categories: Category[] = [
-  { id: "entradas", label: "Entradas" },
-  { id: "platillos", label: "Platillos" },
-  { id: "bebidas", label: "Bebidas" },
-  { id: "postres", label: "Postres" },
-]
-
-const menuItems: MenuItem[] = [
-  { id: "m1", name: "Guacamole", price: 65, category: "entradas" },
-  { id: "m2", name: "Papas Fritas", price: 55, category: "entradas" },
-  { id: "m7", name: "Ensalada César", price: 95, category: "entradas" },
-  { id: "m3", name: "Tacos al Pastor", price: 45, category: "platillos" },
-  { id: "m4", name: "Enchiladas Verdes", price: 85, category: "platillos" },
-  { id: "m8", name: "Hamburguesa Clásica", price: 120, category: "platillos" },
-  { id: "m5", name: "Agua de Jamaica", price: 25, category: "bebidas" },
-  { id: "m6", name: "Malteada de Vainilla", price: 45, category: "bebidas" },
-  { id: "m9", name: "Café", price: 35, category: "bebidas" },
-  { id: "m10", name: "Flan Napolitano", price: 50, category: "postres" },
-  { id: "m11", name: "Pastel de Chocolate", price: 60, category: "postres" },
-]
+type OrderItem = MenuProducto & { quantity: number; comment: string }
 
 export function OrderCreatePage() {
   const location = useLocation()
   const navigate = useNavigate()
-  const tableNumber = (location.state as { table?: number; people?: number })?.table ?? 0
-  const peopleCount = (location.state as { table?: number; people?: number })?.people ?? 0
+  const st = location.state as { table?: number; people?: number; mesa?: Mesa } | null
+  const mesa = st?.mesa
+  const tableNumber = mesa?.numero ?? st?.table ?? 0
+  const peopleCount = mesa?.capacidad ?? st?.people ?? 0
+  const { data: categorias } = useCategorias()
+  const { data: items } = useMenuItems()
+  const createOrden = useCreateOrden()
 
   const [step, setStep] = useState<"pedido" | "ajustar" | "confirmar">("pedido")
   const [pedido, setPedido] = useState<OrderItem[]>([])
-  const [categoryTab, setCategoryTab] = useState("entradas")
+  const [categoryTab, setCategoryTab] = useState("")
+
+  const categoriasActivas = useMemo(() => (categorias ?? []).filter((c) => c.activa).sort((a, b) => a.orden - b.orden), [categorias])
+  const itemsActivos = useMemo(() => (items ?? []).filter((i) => i.activo && i.disponible).sort((a, b) => a.orden - b.orden), [items])
+
+  useEffect(() => {
+    if (!categoryTab && categoriasActivas.length > 0) {
+      setCategoryTab(categoriasActivas[0].id)
+    }
+  }, [categoriasActivas, categoryTab])
   const [search, setSearch] = useState("")
   const [showExitDialog, setShowExitDialog] = useState(false)
   const [pendingAction, setPendingAction] = useState<(() => void) | null>(null)
@@ -76,11 +67,14 @@ export function OrderCreatePage() {
     }
   }, [confirmSent, navigate])
 
-  const filtered = search
-    ? menuItems.filter((m) => m.name.toLowerCase().includes(search.toLowerCase()))
-    : menuItems.filter((m) => m.category === categoryTab)
+  const filtered = useMemo(() => {
+    if (!categoryTab) return []
+    return search
+      ? itemsActivos.filter((i) => i.nombre.toLowerCase().includes(search.toLowerCase()))
+      : itemsActivos.filter((i) => i.categoriaId === categoryTab)
+  }, [itemsActivos, categoryTab, search])
 
-  const addItem = (item: MenuItem) => {
+  const addItem = (item: MenuProducto) => {
     setPedido((prev) => {
       const existing = prev.find((c) => c.id === item.id)
       if (existing) return prev.map((c) => (c.id === item.id ? { ...c, quantity: c.quantity + 1 } : c))
@@ -100,7 +94,7 @@ export function OrderCreatePage() {
     setPedido((prev) => prev.map((c) => (c.id === id ? { ...c, comment } : c)))
   }
 
-  const total = pedido.reduce((sum, item) => sum + item.price * item.quantity, 0)
+  const total = pedido.reduce((sum, item) => sum + item.precio * item.quantity, 0)
 
   if (confirmSent) {
     return (
@@ -187,17 +181,20 @@ export function OrderCreatePage() {
               />
             </div>
 
-            {!search && (
-              <div className="flex gap-2 overflow-x-auto pb-1">
-                {categories.map((cat) => (
+            {!search && categoriasActivas.length > 0 && (
+              <div className="flex gap-4 overflow-x-auto border-b border-neutral-200 pb-0">
+                {categoriasActivas.map((cat) => (
                   <button
                     key={cat.id}
                     onClick={() => setCategoryTab(cat.id)}
-                    className={`rounded-full px-3.5 py-1.5 text-xs font-medium whitespace-nowrap transition-all ${
-                      categoryTab === cat.id ? "bg-neutral-900 text-white" : "bg-neutral-100 text-neutral-600 hover:bg-neutral-200"
+                    className={`relative shrink-0 pb-2 text-sm font-medium whitespace-nowrap transition-colors ${
+                      categoryTab === cat.id ? "text-neutral-900" : "text-neutral-400 hover:text-neutral-600"
                     }`}
                   >
-                    {cat.label}
+                    {cat.nombre}
+                    {categoryTab === cat.id && (
+                      <span className="absolute bottom-0 left-0 right-0 h-0.5 rounded-full bg-neutral-900" />
+                    )}
                   </button>
                 ))}
               </div>
@@ -209,8 +206,8 @@ export function OrderCreatePage() {
                 return (
                   <Card key={item.id} className="flex items-center justify-between px-4 py-3" hover>
                     <div>
-                      <p className="text-sm font-medium text-neutral-900">{item.name}</p>
-                      <p className="text-xs text-neutral-400">{categories.find((c) => c.id === item.category)?.label} · {formatCurrency(item.price)}</p>
+                      <p className="text-sm font-medium text-neutral-900">{item.nombre}</p>
+                      <p className="text-xs text-neutral-400">{item.categoriaNombre} · {formatCurrency(item.precio)}</p>
                     </div>
                     <div className="flex items-center gap-1.5">
                       {inPedido && (
@@ -256,8 +253,8 @@ export function OrderCreatePage() {
               {pedido.map((item) => (
                 <Card key={item.id} className="px-4 py-3" hover>
                   <div className="flex items-center justify-between mb-1">
-                    <p className="text-sm font-medium text-neutral-900">{item.name}</p>
-                    <span className="text-xs text-neutral-500">{formatCurrency(item.price * item.quantity)}</span>
+                    <p className="text-sm font-medium text-neutral-900">{item.nombre}</p>
+                    <span className="text-xs text-neutral-500">{formatCurrency(item.precio * item.quantity)}</span>
                   </div>
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
@@ -336,8 +333,8 @@ export function OrderCreatePage() {
                 {pedido.map((item) => (
                   <div key={item.id}>
                     <div className="flex items-center justify-between text-sm">
-                      <span className="text-neutral-700">{item.quantity}x {item.name}</span>
-                      <span className="text-neutral-600">{formatCurrency(item.price * item.quantity)}</span>
+                      <span className="text-neutral-700">{item.quantity}x {item.nombre}</span>
+                      <span className="text-neutral-600">{formatCurrency(item.precio * item.quantity)}</span>
                     </div>
                     {item.comment && (
                       <p className="text-xs text-amber-600 flex items-center gap-1 mt-0.5 ml-1">
@@ -360,9 +357,28 @@ export function OrderCreatePage() {
               <Button variant="outline" className="flex-1 rounded-xl" onClick={() => setStep("ajustar")}>
                 Ajustar
               </Button>
-              <Button className="flex-1 rounded-xl" onClick={() => setConfirmSent(true)}>
+              <Button
+                className="flex-1 rounded-xl"
+                disabled={createOrden.isPending}
+                onClick={() => {
+                  if (!mesa) return
+                  createOrden.mutate(
+                    {
+                      mesaId: mesa.id,
+                      notas: notes || null,
+                      dedicatoria: null,
+                      productos: pedido.map((p) => ({
+                        itemMenuId: p.id,
+                        cantidad: p.quantity,
+                        notas: p.comment || null,
+                      })),
+                    },
+                    { onSuccess: () => setConfirmSent(true) },
+                  )
+                }}
+              >
                 <Send size={16} className="mr-2" />
-                Enviar a cocina
+                {createOrden.isPending ? "Enviando..." : "Enviar a cocina"}
               </Button>
             </div>
           </>

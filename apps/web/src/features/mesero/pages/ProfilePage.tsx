@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom"
-import { ArrowLeft, Bell, User, Building2, BadgeCheck, Calendar, Clock, Shield, LogOut, Copy } from "lucide-react"
+import { ArrowLeft, User, Building2, BadgeCheck, Calendar, Clock, Shield, LogOut, Copy } from "lucide-react"
 import { useAuthStore } from "@/core/auth/store"
-import { useNotificationStore } from "../stores/notificationStore"
+import { NotificationBell } from "../components/NotificationBell"
 
 export function MeseroProfilePage() {
   const navigate = useNavigate()
@@ -22,13 +22,7 @@ export function MeseroProfilePage() {
               <h1 className="text-xl font-medium text-white tracking-tight">Perfil</h1>
             </div>
           </div>
-          <button onClick={() => useNotificationStore.getState().toggle()} className="relative inline-flex items-center bg-white/10 border border-white/10 text-white/70 rounded-full p-2 hover:bg-white/20 transition-colors">
-            <Bell size={16} />
-            <span className="absolute -top-0.5 -right-0.5 flex h-2.5 w-2.5">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#F59E0B] opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#F59E0B]"></span>
-            </span>
-          </button>
+          <NotificationBell />
         </div>
       </div>
 

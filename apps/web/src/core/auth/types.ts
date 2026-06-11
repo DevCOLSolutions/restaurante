@@ -2,7 +2,7 @@ export const UserRole = {
   GlobalManager: "GlobalManager",
   AdminSucursal: "AdminSucursal",
   Mesero: "Mesero",
-  AreaCocina: "AreaCocina",
+  Cocinero: "Cocinero",
   ConsumidorFinal: "ConsumidorFinal",
 } as const
 

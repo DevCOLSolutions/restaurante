@@ -40,6 +40,8 @@ import {
   OrderAddPage,
   MeseroProfilePage,
   ChargePage,
+  MesaDetailPage,
+  OrderDetailPage,
 } from "@/features/mesero/pages"
 import { CocinaLayout } from "@/features/cocina/layouts/DashboardLayout"
 import {
@@ -137,6 +139,8 @@ export const router = createBrowserRouter([
           { path: "orders", element: <MeseroOrdersPage /> },
           { path: "ready", element: <MeseroReadyPage /> },
           { path: "charge", element: <ChargePage /> },
+          { path: "mesa/:mesaId", element: <MesaDetailPage /> },
+          { path: "orden/:ordenId", element: <OrderDetailPage /> },
           { path: "profile", element: <MeseroProfilePage /> },
         ],
       },
@@ -144,7 +148,7 @@ export const router = createBrowserRouter([
       {
         path: "app/cocina",
         element: (
-          <ProtectedRoute allowedRoles={[UserRole.AreaCocina]}>
+          <ProtectedRoute allowedRoles={[UserRole.Cocinero]}>
             <CocinaLayout />
           </ProtectedRoute>
         ),

@@ -8,7 +8,7 @@ export function getDashboardPathForRole(role: UserRole): string {
       return "/app/admin-sucursal"
     case "Mesero":
       return "/app/mesero"
-    case "AreaCocina":
+    case "Cocinero":
       return "/app/cocina"
     case "ConsumidorFinal":
       return "/app/consumidor"

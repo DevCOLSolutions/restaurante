@@ -5,6 +5,7 @@ import { Button } from "@workspace/ui/components/button"
 import { Input } from "@/shared/ui/Input"
 import { ArrowLeft, ArrowUp, Plus, Minus, UtensilsCrossed, Search, MessageCircle, Send, Bell, Check } from "lucide-react"
 import { formatCurrency } from "@/core/utils"
+import type { Mesa } from "@/types/api"
 
 type MenuItem = { id: string; name: string; price: number; category: string }
 
@@ -35,8 +36,10 @@ interface CartItem extends MenuItem { quantity: number; comment: string }
 export function OrderAddPage() {
     const location = useLocation()
     const navigate = useNavigate()
-    const tableNumber = (location.state as { table?: number; people?: number })?.table ?? 0
-    const peopleCount = (location.state as { table?: number; people?: number })?.people ?? 0
+    const st = location.state as { table?: number; people?: number; mesa?: Mesa } | null
+    const mesa = st?.mesa
+    const tableNumber = mesa?.numero ?? st?.table ?? 0
+    const peopleCount = mesa?.capacidad ?? st?.people ?? 0
 
     const [step, setStep] = useState<"add" | "adjust" | "confirm">("add")
     const [cart, setCart] = useState<CartItem[]>([])

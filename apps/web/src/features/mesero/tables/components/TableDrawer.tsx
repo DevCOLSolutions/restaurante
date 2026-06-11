@@ -1,91 +1,69 @@
 import { createPortal } from "react-dom"
-import { X, Clock, User, UtensilsCrossed, Plus, ShoppingCart } from "lucide-react"
-import type { Table } from "../types"
-import { statusConfig } from "../constants/statusConfig"
-import { waiterByTable, ordersByTable } from "../mocks/data"
-import { TableOrderSummary } from "./TableOrderSummary"
+import { useNavigate } from "react-router-dom"
+import { X, Plus, Users } from "lucide-react"
+import { useMesas } from "@/features/global-manager/hooks/useMesas"
 
 interface TableDrawerProps {
-  table: Table
-  currentUser: string
   onClose: () => void
-  onCreateOrder: (tableNumber: number, people: number) => void
-  onAddToOrder: (tableNumber: number, people: number) => void
 }
 
-export function TableDrawer({ table, currentUser, onClose, onCreateOrder, onAddToOrder }: TableDrawerProps) {
+export function TableDrawer({ onClose }: TableDrawerProps) {
+  const navigate = useNavigate()
+  const { data: mesas } = useMesas()
+  const disponibles = mesas?.filter((m) => m.estado === "disponible") ?? []
+
   return createPortal(
     <>
       <div className="fixed inset-0 z-[100] bg-black/30" onClick={onClose} />
-      <div className="fixed bottom-0 left-0 right-0 z-[101] w-full rounded-t-2xl bg-white px-5 pb-10 pt-5 shadow-2xl">
-        <button onClick={onClose} className="absolute right-4 top-4 rounded-full p-1 text-neutral-400 hover:bg-neutral-100">
-          <X size={18} />
-        </button>
-
-        <div className="flex items-center gap-3 mb-5">
-          <div className="flex items-center justify-center w-10 h-10 rounded-full bg-neutral-100 text-neutral-700">
-            <UtensilsCrossed size={20} />
-          </div>
+      <div className="fixed bottom-0 left-0 right-0 z-[101] w-full rounded-t-2xl bg-white px-5 pb-10 pt-5 shadow-2xl max-h-[70vh] overflow-y-auto">
+        <div className="flex items-center justify-between mb-5">
           <div>
-            <p className="text-base font-semibold text-neutral-900">Mesa {String(table.number).padStart(2, "0")}</p>
-            <p className="text-sm text-neutral-500">{table.people} {table.people === 1 ? "persona" : "personas"}</p>
+            <p className="text-base font-semibold text-neutral-900">Nueva orden</p>
+            <p className="text-sm text-neutral-500">{disponibles.length} mesas disponibles</p>
           </div>
-          <span className={`ml-auto text-xs font-medium px-3 py-1 rounded-full ${statusConfig[table.status]?.badge}`}>
-            {statusConfig[table.status]?.label}
-          </span>
+          <button onClick={onClose} className="rounded-full p-1 text-neutral-400 hover:bg-neutral-100">
+            <X size={18} />
+          </button>
         </div>
 
-        <div className="space-y-3">
-          {table.status === "ocupada" && (
-            <>
-              <div className="flex items-center gap-3 text-sm text-neutral-600">
-                <User size={16} className="text-neutral-400" />
-                <span>
-                  {waiterByTable[table.number] === currentUser
-                    ? <><strong className="text-emerald-600">Mi mesa</strong> · {currentUser}</>
-                    : <>Mesero: <strong>{waiterByTable[table.number] ?? "—"}</strong></>
-                  }
-                </span>
-              </div>
-              <div className="flex items-center gap-3 text-sm text-neutral-600">
-                <Clock size={16} className="text-neutral-400" />
-                <span>Tiempo: <strong>{table.time}</strong></span>
-              </div>
-              <div className="border-t border-neutral-100 pt-3">
-                <p className="text-xs font-semibold text-neutral-500 uppercase tracking-wide mb-2 flex items-center gap-1.5">
-                  <ShoppingCart size={13} /> Orden actual
-                </p>
-                <TableOrderSummary items={ordersByTable[table.number] ?? []} />
-              </div>
-              {waiterByTable[table.number] === currentUser && (
-                <button
-                  onClick={() => onAddToOrder(table.number, table.people)}
-                  className="w-full flex items-center justify-center gap-2 rounded-xl bg-neutral-900 py-3 text-sm font-medium text-white hover:bg-neutral-800 transition-colors"
-                >
-                  <ShoppingCart size={16} />
-                  Añadir a la orden
-                </button>
-              )}
-            </>
-          )}
-          {table.status === "reservada" && (
-            <div className="flex items-center gap-3 text-sm text-neutral-600">
-              <Clock size={16} className="text-neutral-400" />
-              <span>Reservada para las <strong>{table.time}</strong></span>
-            </div>
-          )}
-          {table.status === "libre" && (
-            <button
-              onClick={() => onCreateOrder(table.number, table.people)}
-              className="w-full flex items-center justify-center gap-2 rounded-xl bg-neutral-900 py-3 text-sm font-medium text-white hover:bg-neutral-800 transition-colors"
+        <div className="space-y-2">
+          {disponibles.map((mesa) => (
+            <div
+              key={mesa.id}
+              className="flex items-center gap-3 rounded-xl border border-emerald-200/60 bg-emerald-50/40 px-4 py-3"
             >
-              <Plus size={18} />
-              Crear orden
-            </button>
-          )}
-          {table.status === "limpieza" && (
-            <div className="flex items-center gap-3 text-sm text-neutral-600">
-              <span className="text-neutral-400">Mesa en limpieza · {table.time}</span>
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2">
+                  <span className="text-sm font-semibold text-neutral-900">Mesa {String(mesa.numero).padStart(2, "0")}</span>
+                  <span className="text-xs text-neutral-400">— {mesa.nombre}</span>
+                </div>
+                <div className="flex items-center gap-2 mt-0.5">
+                  <span className="flex items-center gap-1 text-[11px] text-neutral-500">
+                    <Users size={11} />
+                    {mesa.capacidad} {mesa.capacidad === 1 ? "persona" : "personas"}
+                  </span>
+                  <span className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700">
+                    Disponible
+                  </span>
+                </div>
+              </div>
+              <button
+                onClick={() => {
+                  onClose()
+                  navigate("/app/mesero/order-create", { state: { mesa } })
+                }}
+                className="flex items-center gap-1 rounded-lg bg-emerald-600 px-3.5 py-2 text-xs font-medium text-white hover:bg-emerald-700 transition-colors"
+              >
+                <Plus size={13} />
+                Tomar pedido
+              </button>
+            </div>
+          ))}
+
+          {disponibles.length === 0 && (
+            <div className="flex flex-col items-center justify-center py-12 text-center">
+              <p className="text-sm font-medium text-neutral-500">No hay mesas disponibles</p>
+              <p className="text-xs text-neutral-400 mt-1">Todas las mesas están ocupadas o reservadas</p>
             </div>
           )}
         </div>
