@@ -1,6 +1,6 @@
 import { useState, useMemo } from "react"
 import { useNavigate } from "react-router-dom"
-import { ArrowLeft, ClipboardList, Clock, User, Table2, ChefHat, MessageCircle, ChevronDown, ChevronUp } from "lucide-react"
+import { ArrowLeft, ClipboardList, Clock, Table2, ChefHat, ChevronDown, ChevronUp } from "lucide-react"
 import { formatCurrency } from "@/core/utils"
 import { NotificationBell } from "../components/NotificationBell"
 import { useOrdenesPorMesero } from "@/features/mesero/hooks/useOrdenesPorMesero"

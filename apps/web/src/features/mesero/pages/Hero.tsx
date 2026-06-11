@@ -1,5 +1,5 @@
 import { useMe } from "@/hooks/useMe"
-import { Bell, Building2, ClipboardList, DollarSign, Store, Table2 } from "lucide-react"
+import {  Building2, Table2 } from "lucide-react"
 import { NotificationBell } from "../components/NotificationBell"
 
 const days = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"]

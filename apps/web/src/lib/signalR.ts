@@ -95,6 +95,7 @@ export async function stopConnection(): Promise<void> {
       await conn.stop()
       console.info("[SignalR] Desconectado del hub")
     } catch {
+      // connection already closed
     }
   }
 }

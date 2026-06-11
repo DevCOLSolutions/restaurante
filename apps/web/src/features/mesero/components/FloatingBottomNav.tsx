@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { cn } from "@/shared/lib/utils"
 import { NavLink, useLocation, useNavigate } from "react-router-dom"
 import { Plus, HouseHeart, UtensilsCrossed, ClipboardList, User, Users } from "lucide-react"
@@ -20,15 +20,13 @@ export function FloatingBottomNav() {
 
   const disponibles = mesas?.filter((m) => m.estado === "disponible") ?? []
 
-  const openDrawer = () => {
-    setDrawerOpen(true)
-    document.body.style.overflow = "hidden"
-  }
+  useEffect(() => {
+    document.body.style.overflow = drawerOpen ? "hidden" : ""
+    return () => { document.body.style.overflow = "" }
+  }, [drawerOpen])
 
-  const closeDrawer = () => {
-    setDrawerOpen(false)
-    document.body.style.overflow = ""
-  }
+  const openDrawer = () => setDrawerOpen(true)
+  const closeDrawer = () => setDrawerOpen(false)
 
   const selectTable = (mesa: (typeof disponibles)[number]) => {
     closeDrawer()

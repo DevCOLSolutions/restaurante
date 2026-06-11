@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { useParams, useNavigate } from "react-router-dom"
-import { ArrowLeft, Plus, User, Clock, Table2, Send, Check, XCircle } from "lucide-react"
+import { ArrowLeft, Plus, User, Clock, Send, Check, XCircle } from "lucide-react"
 import { useQuery } from "@tanstack/react-query"
 import { apiFetch } from "@/lib/apiClient"
 import { ENDPOINTS } from "@/lib/endpoints"

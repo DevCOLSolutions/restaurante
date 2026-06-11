@@ -3,5 +3,7 @@ export function playSound(url: string) {
     const audio = new Audio(url)
     audio.volume = 0.5
     audio.play().catch(() => {})
-  } catch {}
+  } catch {
+    // audio not supported
+  }
 }

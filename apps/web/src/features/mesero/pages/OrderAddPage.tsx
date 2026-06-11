@@ -255,7 +255,7 @@ export function OrderAddPage() {
                                             <button onClick={() => addItem(item)} className="text-neutral-400 hover:text-neutral-600"><Plus size={14} /></button>
                                         </div>
                                         <div className="flex items-center gap-1">
-                                            {item.comment && <span className="text-[10px] text-neutral-400 max-w-[100px] truncate">{item.comment}</span>}
+                                            {item.comment && <span className="text-[10px] text-neutral-400 max-w-100px truncate">{item.comment}</span>}
                                             <button
                                                 onClick={() => {
                                                     if (editingComment === item.id) { setEditingComment(null); setCommentDraft("") }

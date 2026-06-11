@@ -1,5 +1,5 @@
 import { useLocation, useNavigate } from "react-router-dom"
-import { ArrowLeft, XCircle, Check, Table2, User, Clock } from "lucide-react"
+import { ArrowLeft, XCircle, Table2, User, Clock } from "lucide-react"
 import { useMesas } from "@/features/global-manager/hooks/useMesas"
 import { useOrdenesPorMesa } from "@/features/mesero/hooks/useOrdenesPorMesa"
 import { useCerrarOrden } from "@/features/mesero/hooks/useCerrarOrden"

@@ -162,8 +162,8 @@ export function MeseroTablesComponent() {
             {/* Drawer */}
             {selectedTable && createPortal(
                 <>
-                    <div className="fixed inset-0 z-[100] bg-black/30" onClick={() => setSelectedTable(null)} />
-                    <div className="fixed bottom-0 left-0 right-0 z-[101] w-full rounded-t-2xl bg-white px-5 pb-10 pt-5 shadow-2xl">
+                    <div className="fixed inset-0 z-100 bg-black/30" onClick={() => setSelectedTable(null)} />
+                    <div className="fixed bottom-0 left-0 right-0 z-101 w-full rounded-t-2xl bg-white px-5 pb-10 pt-5 shadow-2xl">
                         <button onClick={() => setSelectedTable(null)} className="absolute right-4 top-4 rounded-full p-1 text-neutral-400 hover:bg-neutral-100">
                             <X size={18} />
                         </button>

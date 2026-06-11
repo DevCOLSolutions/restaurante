@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect, useMemo } from "react"
+import { useState, useCallback, useEffect, useMemo, useRef } from "react"
 import { useLocation, useNavigate } from "react-router-dom"
 import { Card } from "@/shared/ui/Card"
 import { Input } from "@/shared/ui/Input"
@@ -25,16 +25,18 @@ export function OrderCreatePage() {
 
   const [step, setStep] = useState<"pedido" | "ajustar" | "confirmar">("pedido")
   const [pedido, setPedido] = useState<OrderItem[]>([])
-  const [categoryTab, setCategoryTab] = useState("")
-
   const categoriasActivas = useMemo(() => (categorias ?? []).filter((c) => c.activa).sort((a, b) => a.orden - b.orden), [categorias])
   const itemsActivos = useMemo(() => (items ?? []).filter((i) => i.activo && i.disponible).sort((a, b) => a.orden - b.orden), [items])
 
+  const [categoryTab, setCategoryTab] = useState("")
+  const tabSetRef = useRef(false)
   useEffect(() => {
-    if (!categoryTab && categoriasActivas.length > 0) {
+    if (!categoryTab && !tabSetRef.current && categoriasActivas.length > 0) {
+      tabSetRef.current = true
       setCategoryTab(categoriasActivas[0].id)
     }
   }, [categoriasActivas, categoryTab])
+
   const [search, setSearch] = useState("")
   const [showExitDialog, setShowExitDialog] = useState(false)
   const [pendingAction, setPendingAction] = useState<(() => void) | null>(null)

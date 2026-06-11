@@ -1,7 +1,7 @@
-import { useEffect, useRef } from "react"
+import { useEffect } from "react"
 import { useQueryClient } from "@tanstack/react-query"
 import { useAuthStore } from "@/core/auth/store"
-import { startConnection, stopConnection, on, off } from "@/lib/signalR"
+import { startConnection, stopConnection, on } from "@/lib/signalR"
 import { useNotificationStore } from "../stores/notificationStore"
 import type { Notificacion, ProductoActualizadoPayload, Orden } from "@/types/api"
 import { playSound } from "@/lib/audio"
@@ -26,72 +26,66 @@ export function useSignalRNotifications() {
         if (cancelled) return
 
         unsubs.push(
-          on("RecibirNotificacion", (notificacion: Notificacion) => {
-            console.info("[SignalR] RecibirNotificacion recibida:", notificacion.tipo, notificacion.titulo)
+          on("RecibirNotificacion", (args: unknown) => {
+            const notificacion = args as Notificacion
+            console.info("[SignalR] RecibirNotificacion:", notificacion.tipo, notificacion.titulo)
             playSound(notifSound)
-            const state = useNotificationStore.getState()
-            state.setNotificaciones([notificacion, ...state.notificaciones])
-            state.setUnread(state.unread + 1)
-            queryClient.invalidateQueries({ queryKey: ["ordenes-por-mesero"] })
-            queryClient.invalidateQueries({ queryKey: ["ordenes-por-mesa"] })
+            useNotificationStore.getState().setUnread(
+              useNotificationStore.getState().unread + 1,
+            )
+            queryClient.invalidateQueries({ queryKey: ["notificaciones"] })
           }),
         )
 
         unsubs.push(
-          on("RecibirNotificaciones", (notificaciones: Notificacion[]) => {
-            console.info(`[SignalR] RecibirNotificaciones recibidas: ${notificaciones.length}`)
-            useNotificationStore.getState().setNotificaciones(notificaciones)
+          on("RecibirNotificaciones", (args: unknown) => {
+            const notificaciones = args as Notificacion[]
+            console.info(`[SignalR] RecibirNotificaciones: ${notificaciones.length}`)
+            queryClient.invalidateQueries({ queryKey: ["notificaciones"] })
             queryClient.invalidateQueries({ queryKey: ["notificaciones-no-leidas"] })
           }),
         )
 
         unsubs.push(
           on("ContadorActualizado", () => {
-            console.info("[SignalR] ContadorActualizado recibido")
             queryClient.invalidateQueries({ queryKey: ["notificaciones-no-leidas"] })
           }),
         )
 
         unsubs.push(
-          on("OrdenActualizada", () => {
-            console.info("[SignalR] OrdenActualizada recibida — refrescando órdenes")
-            queryClient.invalidateQueries({ queryKey: ["ordenes-por-mesero"] })
-            queryClient.invalidateQueries({ queryKey: ["ordenes-por-mesa"] })
+          on("OrdenNueva", (args: unknown) => {
+            const orden = args as Orden
+            console.info("[SignalR] OrdenNueva #", orden.numeroOrden)
+            queryClient.setQueryData<Orden[]>(["ordenes-mi-area"], (old) =>
+              old ? [orden, ...old] : [orden],
+            )
+            queryClient.invalidateQueries({ queryKey: ["ordenes-abiertas"] })
           }),
         )
 
         unsubs.push(
-          on("ProductoActualizado", (payload: ProductoActualizadoPayload) => {
-            console.info("[SignalR] ProductoActualizado:", payload.producto.estado, "-", payload.producto.itemMenuNombre ?? "(sin nombre)")
+          on("ProductoActualizado", (args: unknown) => {
+            const payload = args as ProductoActualizadoPayload
+            console.info("[SignalR] ProductoActualizado:", payload.producto.estado)
             const { ordenId, producto } = payload
-            const updateCache = (old: Orden[] | undefined) => {
-              if (!old) return old
-              return old.map((o) =>
-                o.id === ordenId
-                  ? {
-                      ...o,
-                      productos: o.productos.map((p) =>
-                        p.id === producto.id
-                          ? { ...p, estado: producto.estado, enviadoEn: producto.enviadoEn, listoEn: producto.listoEn }
-                          : p,
-                      ),
-                    }
-                  : o,
-              )
-            }
-            queryClient.setQueriesData<Orden[]>({ queryKey: ["ordenes-por-mesa"] }, updateCache)
-            queryClient.setQueriesData<Orden[]>({ queryKey: ["ordenes-por-mesero"] }, updateCache)
-            queryClient.setQueriesData<Orden>({ queryKey: ["orden"] }, (old) => {
+
+            const updateOrden = (old: Orden | undefined): Orden | undefined => {
               if (!old || old.id !== ordenId) return old
               return {
                 ...old,
                 productos: old.productos.map((p) =>
-                  p.id === producto.id
-                    ? { ...p, estado: producto.estado, enviadoEn: producto.enviadoEn, listoEn: producto.listoEn }
-                    : p,
+                  p.id === producto.id ? { ...p, estado: producto.estado, enviadoEn: producto.enviadoEn, listoEn: producto.listoEn } : p,
                 ),
               }
-            })
+            }
+
+            const updateList = (old: Orden[] | undefined) => {
+              if (!old) return old
+              return old.map((o) => (o.id === ordenId ? updateOrden(o) ?? o : o))
+            }
+
+            queryClient.setQueriesData<Orden[]>({ queryKey: ["ordenes"] }, updateList)
+            queryClient.setQueriesData<Orden>({ queryKey: ["orden", ordenId] }, updateOrden)
           }),
         )
       })

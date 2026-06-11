@@ -4,6 +4,7 @@ import { apiFetch } from "@/lib/apiClient"
 import { ENDPOINTS } from "@/lib/endpoints"
 import { useAuthStore } from "@/core/auth/store"
 import { getDashboardPathForRole } from "@/core/auth/utils"
+import type { UserRole } from "@/core/auth/types"
 import type { ApiResponse, LoginData, LoginRequest } from "@/types/api"
 
 export function useLogin() {
@@ -33,7 +34,7 @@ export function useLogin() {
       })
 
       queryClient.invalidateQueries({ queryKey: ["me"] })
-      navigate(getDashboardPathForRole(apiUser.role as any), { replace: true })
+      navigate(getDashboardPathForRole(apiUser.role as UserRole), { replace: true })
     },
   })
 }

@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { useParams, useNavigate } from "react-router-dom"
-import { ArrowLeft, Plus, User, Clock, ChefHat, Send, XCircle, Check } from "lucide-react"
+import { ArrowLeft, Plus, User, Clock, Send, XCircle, Check } from "lucide-react"
 import { useMe } from "@/hooks/useMe"
 import { useAuthStore } from "@/core/auth/store"
 import { useMesas } from "@/features/global-manager/hooks/useMesas"
