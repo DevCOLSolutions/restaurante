@@ -1,80 +1,139 @@
-import type { TableInfo, OrderInfo } from "../types"
+import type { SucursalData, TableInfo } from "../types"
 
-const mockTables: TableInfo[] = [
-  { id: "t1", number: 1, status: "ocupada", seats: 4, time: "45 min", orderId: "ord-001", zone: "Salón Principal", x: 5, y: 10 },
-  { id: "t2", number: 2, status: "ocupada", seats: 2, time: "20 min", orderId: "ord-002", zone: "Salón Principal", x: 5, y: 35 },
-  { id: "t3", number: 3, status: "libre", seats: 6, zone: "Salón Principal", x: 5, y: 60 },
-  { id: "t4", number: 4, status: "libre", seats: 2, zone: "Salón Principal", x: 50, y: 10 },
-  { id: "t5", number: 5, status: "reservada", seats: 4, time: "19:30", zone: "Terraza", x: 50, y: 35 },
-  { id: "t6", number: 6, status: "ocupada", seats: 4, time: "60 min", orderId: "ord-003", zone: "Terraza", x: 50, y: 60 },
-  { id: "t7", number: 7, status: "limpieza", seats: 2, zone: "Barra", x: 30, y: 85 },
-  { id: "t8", number: 8, status: "libre", seats: 8, zone: "Barra", x: 65, y: 85 },
-]
-
-const mockOrdersList: OrderInfo[] = [
-  {
-    id: "ord-001",
-    tableNumber: 1,
-    items: [
-      { id: "i1", name: "Tacos al Pastor", quantity: 3, price: 45 },
-      { id: "i2", name: "Guacamole", quantity: 1, price: 65 },
-      { id: "i3", name: "Agua de Jamaica", quantity: 2, price: 25 },
-    ],
-    total: 230,
-    status: "preparing",
-    createdAt: "2026-05-26T13:15:00",
-  },
-  {
-    id: "ord-002",
-    tableNumber: 2,
-    items: [
-      { id: "i4", name: "Enchiladas Verdes", quantity: 2, price: 85 },
-      { id: "i5", name: "Coca-Cola", quantity: 2, price: 20 },
-    ],
-    total: 210,
-    status: "ready",
-    createdAt: "2026-05-26T13:30:00",
-  },
-  {
-    id: "ord-003",
-    tableNumber: 6,
-    items: [
-      { id: "i6", name: "Hamburguesa Clásica", quantity: 2, price: 120 },
-      { id: "i7", name: "Papas Fritas", quantity: 2, price: 55 },
-      { id: "i8", name: "Malteada de Vainilla", quantity: 2, price: 45 },
-    ],
-    total: 440,
-    status: "pending",
-    createdAt: "2026-05-26T14:00:00",
-  },
-  {
-    id: "ord-004",
-    tableNumber: 5,
-    items: [
-      { id: "i9", name: "Ensalada César", quantity: 1, price: 95 },
-    ],
-    total: 95,
-    status: "served",
-    createdAt: "2026-05-26T12:45:00",
-  },
-]
-
-export const restaurants = [
-  { id: "rest-001", name: "Restaurante Principal", tables: mockTables },
-]
-
-export function getRestaurantTables(): TableInfo[] {
-  return mockTables
+function generateTables(base: number, count: number, zone: string, zonePrefix: string): TableInfo[] {
+  return Array.from({ length: count }, (_, i) => ({
+    id: `t-${zonePrefix}-${base + i}`,
+    number: base + i,
+    status: (i === 0 ? "ocupada" : i === 1 && count > 2 ? "reservada" : "libre") as TableInfo["status"],
+    seats: [2, 4, 6, 8][i % 4],
+    zone,
+    time: i === 0 ? "45 min" : undefined,
+    orderId: i === 0 ? `ord-${zonePrefix}-${base + i}` : undefined,
+    x: 5 + i * 15,
+    y: 10 + i * 12,
+  }))
 }
 
-export function mockOrders(): OrderInfo[] {
-  return mockOrdersList
+const sucursalesData: SucursalData[] = [
+  {
+    id: "suc-001",
+    name: "Restaurante Centro",
+    address: "Av. Principal 123, Centro",
+    phone: "555-1000",
+    zones: [
+      { name: "Salón principal", type: "salon", icon: "Sofa" },
+      { name: "Terraza interior", type: "terraza", icon: "Sun" },
+      { name: "Barra", type: "barra", icon: "Wine" },
+    ],
+    tables: [
+      ...generateTables(1, 8, "Salón principal", "SP"),
+      ...generateTables(9, 4, "Terraza interior", "TI"),
+      ...generateTables(13, 3, "Barra", "BR"),
+    ],
+    meseros: [
+      { id: "m1", name: "Carlos López", username: "carlos.lopez", email: "carlos@centro.com", phone: "555-1001", status: "TURNO" },
+      { id: "m2", name: "María García", username: "maria.garcia", email: "maria@centro.com", phone: "555-1002", status: "TURNO" },
+      { id: "m3", name: "José Martínez", username: "jose.martinez", email: "jose@centro.com", phone: "555-1003", status: "DESCANSO" },
+    ],
+    admins: [
+      { id: "a1", name: "Admin Centro", username: "admin.centro", email: "admin@centro.com", phone: "555-1099", status: "TURNO" },
+    ],
+    kitchenAreas: [
+      { name: "Cocina caliente", description: "Área de platillos calientes" },
+      { name: "Cocina fría", description: "Área de ensaladas y postres" },
+    ],
+  },
+  {
+    id: "suc-002",
+    name: "Sucursal Norte",
+    address: "Blvd. Norte 456, Col. Industrial",
+    phone: "555-2000",
+    zones: [
+      { name: "Comedor principal", type: "salon", icon: "Sofa" },
+      { name: "Zona infantil", type: "terraza", icon: "Sun" },
+      { name: "Estacionamiento", type: "barra", icon: "Wine" },
+    ],
+    tables: [
+      ...generateTables(1, 6, "Comedor principal", "CP"),
+      ...generateTables(7, 3, "Zona infantil", "ZI"),
+      ...generateTables(10, 2, "Estacionamiento", "ES"),
+    ],
+    meseros: [
+      { id: "m4", name: "Ana Fernández", username: "ana.fernandez", email: "ana@norte.com", phone: "555-2001", status: "TURNO" },
+      { id: "m5", name: "Pedro Sánchez", username: "pedro.sanchez", email: "pedro@norte.com", phone: "555-2002", status: "DESCANSO" },
+      { id: "m6", name: "Lucía Ramírez", username: "lucia.ramirez", email: "lucia@norte.com", phone: "555-2003", status: "TURNO" },
+      { id: "m7", name: "Roberto Díaz", username: "roberto.diaz", email: "roberto@norte.com", phone: "555-2004", status: "TURNO" },
+    ],
+    admins: [
+      { id: "a2", name: "Admin Norte", username: "admin.norte", email: "admin@norte.com", phone: "555-2099", status: "TURNO" },
+    ],
+    kitchenAreas: [
+      { name: "Cocina general", description: "Área de cocina principal" },
+      { name: "Parrilla", description: "Área de carnes y parrilla" },
+    ],
+  },
+  {
+    id: "suc-003",
+    name: "Terraza Sur",
+    address: "Av. del Lago 789, Fracc. Sur",
+    phone: "555-3000",
+    zones: [
+      { name: "Terraza abierta", type: "terraza", icon: "Sun" },
+      { name: "Palapa", type: "salon", icon: "Sofa" },
+      { name: "Jardín", type: "terraza", icon: "Sun" },
+    ],
+    tables: [
+      ...generateTables(1, 5, "Terraza abierta", "TA"),
+      ...generateTables(6, 3, "Palapa", "PL"),
+      ...generateTables(9, 4, "Jardín", "JN"),
+    ],
+    meseros: [
+      { id: "m8", name: "Sofía Torres", username: "sofia.torres", email: "sofia@terraza.com", phone: "555-3001", status: "TURNO" },
+      { id: "m9", name: "Diego Vargas", username: "diego.vargas", email: "diego@terraza.com", phone: "555-3002", status: "DESCANSO" },
+      { id: "m10", name: "Valentina Ríos", username: "valentina.rios", email: "valentina@terraza.com", phone: "555-3003", status: "TURNO" },
+    ],
+    admins: [
+      { id: "a3", name: "Admin Terraza", username: "admin.terraza", email: "admin@terraza.com", phone: "555-3099", status: "TURNO" },
+    ],
+    kitchenAreas: [
+      { name: "Cocina terraza", description: "Área de cocina especializada en mariscos" },
+      { name: "Bar", description: "Área de bebidas y cocktails" },
+      { name: "Postres", description: "Área de postres y cafetería" },
+    ],
+  },
+  {
+    id: "suc-004",
+    name: "Barra Express",
+    address: "Calle rápida 100, Zona Centro",
+    phone: "555-4000",
+    zones: [
+      { name: "Barra principal", type: "barra", icon: "Wine" },
+      { name: "Área de espera", type: "salon", icon: "Sofa" },
+    ],
+    tables: [
+      ...generateTables(1, 6, "Barra principal", "BP"),
+      ...generateTables(7, 3, "Área de espera", "AE"),
+    ],
+    meseros: [
+      { id: "m11", name: "Diego Rivera", username: "diego.rivera", email: "diego@barra.com", phone: "555-4001", status: "TURNO" },
+      { id: "m12", name: "Miguel Ángel", username: "miguel.angel", email: "miguel@barra.com", phone: "555-4002", status: "DESCANSO" },
+      { id: "m13", name: "Laura Jiménez", username: "laura.jimenez", email: "laura@barra.com", phone: "555-4003", status: "TURNO" },
+      { id: "m14", name: "Andrés Torres", username: "andres.torres", email: "andres@barra.com", phone: "555-4004", status: "TURNO" },
+    ],
+    admins: [
+      { id: "a4", name: "Admin Barra", username: "admin.barra", email: "admin@barra.com", phone: "555-4099", status: "TURNO" },
+    ],
+    kitchenAreas: [
+      { name: "Cocina rápida", description: "Área de preparación rápida" },
+      { name: "Cocktails", description: "Área de preparación de bebidas y cocktails" },
+    ],
+  },
+]
+
+export function getSucursales(): SucursalData[] {
+  return sucursalesData
 }
 
-export function getTableById(id: string): TableInfo | undefined {
-  return mockTables.find((t) => t.id === id)
-}
-
-export function getOrderById(id: string): OrderInfo | undefined {
-  return mockOrdersList.find((o) => o.id === id)
+export function getSucursalById(id: string): SucursalData | undefined {
+  return sucursalesData.find((s) => s.id === id)
 }

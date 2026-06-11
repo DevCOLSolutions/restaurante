@@ -1,4 +1,4 @@
-export { GlobalManagerDashboardPage } from "./DashboardPage"
+﻿export { GlobalManagerDashboardPage } from "./DashboardPage"
 export { TablesPage } from "./TablesPage"
 export { OrdersPage } from "./OrdersPage"
 export { KitchenPage } from "./KitchenPage"

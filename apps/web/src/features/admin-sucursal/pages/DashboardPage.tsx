@@ -4,7 +4,7 @@ import { HeroAdministrador } from "@/features/global-manager/components/Hero"
 import { MesasEstado } from "@/features/global-manager/components/MesasEstado"
 import { formatCurrency } from "@/core/utils"
 import { getRestaurantTables, mockOrders } from "../services"
-import type { TableInfo } from "@/features/global-manager/types"
+import type { TableInfo } from "../types"
 
 export function AdminSucursalDashboardPage() {
   const [tables, setTables] = useState<TableInfo[]>(getRestaurantTables())

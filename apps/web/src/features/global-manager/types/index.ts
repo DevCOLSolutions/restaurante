@@ -1,4 +1,4 @@
-export type TableStatus = "libre" | "ocupada" | "reservada" | "limpieza"
+﻿export type TableStatus = "libre" | "ocupada" | "reservada" | "limpieza"
 
 export interface TableInfo {
   id: string
@@ -27,4 +27,46 @@ export interface OrderInfo {
   total: number
   status: "pending" | "preparing" | "ready" | "served" | "paid"
   createdAt: string
+}
+
+export interface SucursalMesero {
+  id: string
+  name: string
+  username: string
+  email: string
+  phone: string
+  status: "TURNO" | "DESCANSO"
+}
+
+export interface SucursalAdmin {
+  id: string
+  name: string
+  username: string
+  email: string
+  phone: string
+  status: "TURNO" | "DESCANSO"
+}
+
+export interface SucursalZone {
+  name: string
+  type: "salon" | "terraza" | "barra"
+  icon: string
+  description?: string
+}
+
+export interface SucursalKitchenArea {
+  name: string
+  description: string
+}
+
+export interface SucursalData {
+  id: string
+  name: string
+  address: string
+  phone: string
+  tables: TableInfo[]
+  zones: SucursalZone[]
+  meseros: SucursalMesero[]
+  admins: SucursalAdmin[]
+  kitchenAreas: SucursalKitchenArea[]
 }

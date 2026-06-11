@@ -2,7 +2,7 @@ import { useState } from "react"
 import { TableItem } from "@/features/global-manager/components/TableItem"
 import { TableModal } from "@/features/global-manager/components/TableModal"
 import { HeroAdministrador } from "@/features/global-manager/components/Hero"
-import type { TableInfo } from "@/features/global-manager/types"
+import type { TableInfo } from "../types"
 import { getRestaurantTables } from "../services"
 
 export function TablesPage() {
