@@ -53,21 +53,41 @@ export interface User {
 
 export interface Orden {
   id: string
+  numeroOrden: number
+  estado: string
   mesaId: string
+  mesaNumero: number
+  mesaNombre: string
   meseroId: string
-  items: OrdenItem[]
+  meseroNombre: string
+  subtotal: number
+  impuesto: number
+  descuento: number
+  propina: number
   total: number
-  estado: "pendiente" | "en_preparacion" | "listo" | "entregado" | "pagado"
-  createdAt: string
-  updatedAt: string
+  notas: string | null
+  dedicatoria: string | null
+  cerradaEn: string | null
+  creadoEn: string
+  actualizadoEn: string | null
+  productos: OrdenProducto[]
 }
 
-export interface OrdenItem {
+export interface OrdenProducto {
   id: string
-  productoId: string
-  nombre: string
+  itemMenuId: string
+  itemMenuNombre: string
+  areaCocinaId: string | null
+  areaCocinaNombre: string | null
   cantidad: number
-  precio: number
+  precioUnitario: number
+  descuento: number
+  subtotal: number
+  notas: string | null
+  estado: string
+  enviadoEn: string | null
+  listoEn: string | null
+  creadoEn: string
 }
 
 export interface Mesa {
@@ -109,4 +129,147 @@ export interface Producto {
   precio: number
   categoria: string
   disponible: boolean
+}
+
+export interface MenuProducto {
+  id: string
+  restauranteId: string
+  categoriaId: string
+  categoriaNombre: string
+  areaRecepcionId: string | null
+  areaRecepcionNombre: string | null
+  nombre: string
+  descripcion: string | null
+  precio: number
+  costo: number
+  impuestoPct: number
+  disponible: boolean
+  esModificable: boolean
+  tiempoPrepMin: number
+  calorias: number
+  etiquetas: string[]
+  orden: number
+  activo: boolean
+  creadoEn: string
+}
+
+export interface MenuCategoria {
+  id: string
+  restauranteId: string
+  nombre: string
+  descripcion: string | null
+  orden: number
+  activa: boolean
+}
+
+export interface ProductoAreaCocina {
+  id: string
+  ordenId: string
+  numeroOrden: number
+  estadoOrden: string
+  mesaId: string
+  mesaNumero: number
+  mesaNombre: string
+  itemMenuId: string
+  itemMenuNombre: string
+  areaCocinaId: string
+  areaCocinaNombre: string
+  cantidad: number
+  precioUnitario: number
+  descuento: number
+  subtotal: number
+  notasProducto: string | null
+  estadoProducto: string
+  enviadoEn: string | null
+  listoEn: string | null
+  creadoEn: string
+}
+
+export interface Notificacion {
+  id: string
+  tipo: string
+  titulo: string
+  mensaje: string
+  referenciaId: string | null
+  referenciaTipo: string | null
+  leida: boolean
+  leidaEn: string | null
+  creadoEn: string
+}
+
+export interface NotificacionesResponse {
+  items: Notificacion[]
+  total: number
+  page: number
+  pageSize: number
+  totalPages: number
+}
+
+export interface NotificacionesNoLeidasCount {
+  cantidad: number
+}
+
+export interface NotificacionDto {
+  id: string
+  tipo: string
+  titulo: string | null
+  mensaje: string | null
+  referenciaId: string | null
+  referenciaTipo: string | null
+  leida: boolean
+  leidaEn: string | null
+  creadoEn: string
+}
+
+export interface OrdenDto {
+  id: string
+  numeroOrden: number
+  estado: string
+  mesaId: string
+  mesaNumero: number | null
+  mesaNombre: string | null
+  meseroId: string | null
+  meseroNombre: string | null
+  subtotal: number
+  impuesto: number
+  descuento: number
+  propina: number
+  total: number
+  notas: string | null
+  dedicatoria: string | null
+  cerradaEn: string | null
+  creadoEn: string
+  actualizadoEn: string | null
+  productos: OrdenProductoDto[]
+}
+
+export interface OrdenProductoDto {
+  id: string
+  itemMenuId: string
+  itemMenuNombre: string | null
+  areaCocinaId: string | null
+  areaCocinaNombre: string | null
+  cantidad: number
+  precioUnitario: number
+  descuento: number
+  subtotal: number
+  notas: string | null
+  estado: string
+  enviadoEn: string | null
+  listoEn: string | null
+  creadoEn: string
+}
+
+export interface ProductoActualizadoPayload {
+  ordenId: string
+  numeroOrden: number
+  producto: OrdenProductoDto
+}
+
+export interface DashboardMesas {
+  totalMesas: number
+  mesasDisponibles: number
+  mesasOcupadas: number
+  mesasReservadas: number
+  mesasFueraDeServicio: number
 }

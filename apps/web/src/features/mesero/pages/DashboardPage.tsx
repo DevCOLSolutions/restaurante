@@ -1,21 +1,19 @@
 import { Card } from "@/shared/ui/Card"
 import { HeroMesero } from "./Hero"
-import { MeseroTablesPage } from "./TablesGeneral"
-import { CookingPot, ClipboardCheck, PlusCircle } from "lucide-react"
-
+import { MeseroTablesComponent } from "./MeseroTablesComponent"
+import { CookingPot, ClipboardCheck, PlusCircle, } from "lucide-react"
 
 
 export function MeseroDashboardPage() {
-
+  
   return (
     <div className="w-full pb-4">
-      {/* Hero */}
       <HeroMesero/>
 
       <div className="px-4 mt-4 relative z-20 space-y-6">
 
         {/* Mesas por Zona */}
-        <MeseroTablesPage/>
+        <MeseroTablesComponent/>
 
         {/* Acciones Recientes */}
         <section>

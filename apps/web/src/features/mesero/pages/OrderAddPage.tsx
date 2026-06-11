@@ -5,6 +5,7 @@ import { Button } from "@workspace/ui/components/button"
 import { Input } from "@/shared/ui/Input"
 import { ArrowLeft, ArrowUp, Plus, Minus, UtensilsCrossed, Search, MessageCircle, Send, Bell, Check } from "lucide-react"
 import { formatCurrency } from "@/core/utils"
+import type { Mesa } from "@/types/api"
 
 type MenuItem = { id: string; name: string; price: number; category: string }
 
@@ -35,8 +36,10 @@ interface CartItem extends MenuItem { quantity: number; comment: string }
 export function OrderAddPage() {
     const location = useLocation()
     const navigate = useNavigate()
-    const tableNumber = (location.state as { table?: number; people?: number })?.table ?? 0
-    const peopleCount = (location.state as { table?: number; people?: number })?.people ?? 0
+    const st = location.state as { table?: number; people?: number; mesa?: Mesa } | null
+    const mesa = st?.mesa
+    const tableNumber = mesa?.numero ?? st?.table ?? 0
+    const peopleCount = mesa?.capacidad ?? st?.people ?? 0
 
     const [step, setStep] = useState<"add" | "adjust" | "confirm">("add")
     const [cart, setCart] = useState<CartItem[]>([])
@@ -252,7 +255,7 @@ export function OrderAddPage() {
                                             <button onClick={() => addItem(item)} className="text-neutral-400 hover:text-neutral-600"><Plus size={14} /></button>
                                         </div>
                                         <div className="flex items-center gap-1">
-                                            {item.comment && <span className="text-[10px] text-neutral-400 max-w-[100px] truncate">{item.comment}</span>}
+                                            {item.comment && <span className="text-[10px] text-neutral-400 max-w-100px truncate">{item.comment}</span>}
                                             <button
                                                 onClick={() => {
                                                     if (editingComment === item.id) { setEditingComment(null); setCommentDraft("") }

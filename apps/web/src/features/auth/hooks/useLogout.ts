@@ -1,11 +1,13 @@
 import { BASE_URL } from "@/lib/apiClient"
 import { ENDPOINTS } from "@/lib/endpoints"
+import { stopConnection } from "@/lib/signalR"
 import { useAuthStore } from "@/core/auth/store"
 
 export function useLogout() {
   const logout = useAuthStore((s) => s.logout)
 
   return () => {
+    stopConnection().catch(() => {})
     logout()
     localStorage.removeItem("rest2025-auth")
     localStorage.removeItem("rest2025-auth-token")

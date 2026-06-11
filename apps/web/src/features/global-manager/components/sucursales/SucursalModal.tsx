@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import { useCreateSucursal } from "../../hooks/useCreateSucursal"
 import type { Sucursal } from "@/types/api"
 
@@ -15,14 +15,6 @@ export function SucursalModal({ sucursal, onClose }: SucursalModalProps) {
   const [direccion, setDireccion] = useState(sucursal?.direccion ?? "")
   const [telefono, setTelefono] = useState(sucursal?.telefono ?? "")
   const [cantidadMesas, setCantidadMesas] = useState(sucursal?.cantidadMesas ?? 0)
-
-  useEffect(() => {
-    setNombre(sucursal?.nombre ?? "")
-    setDireccion(sucursal?.direccion ?? "")
-    setTelefono(sucursal?.telefono ?? "")
-    setCantidadMesas(sucursal?.cantidadMesas ?? 0)
-  }, [sucursal])
-
   const handleSubmit = async () => {
     if (isEditing) return
     await createMutation.mutateAsync({
