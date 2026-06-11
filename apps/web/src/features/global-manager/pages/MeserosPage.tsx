@@ -1,5 +1,6 @@
 import { useState, useMemo } from "react"
 import { Settings2, Trash2, Plus, Mail, Lock, AtSign, KeyRound } from "lucide-react"
+import { HeroAdministrador } from "../components/Hero"
 
 function generateSuggestions(fullName: string): string[] {
   const parts = fullName.trim().toLowerCase().split(/\s+/).filter(Boolean)
@@ -18,7 +19,6 @@ function generateSuggestions(fullName: string): string[] {
   if (last) s.push(`${first}.${last}${rand()}`)
   return [...new Set(s)]
 }
-import { HeroAdministrador } from "../components/Hero"
 
 const categories = ["MESEROS", "TURNO", "DESCANSO"]
 
@@ -102,14 +102,12 @@ export function MeserosPage() {
                 className={`text-[11px] font-medium px-3 py-1.5 rounded-full border outline-none cursor-pointer transition-all ${
                   mesero.status === "TURNO"
                     ? "bg-emerald-50 text-emerald-700 border-emerald-200"
-                    : mesero.status === "TURNO"
-                      ? "bg-amber-50 text-amber-700 border-amber-200"
-                      : "bg-neutral-100 text-neutral-600 border-neutral-200"
+                    : "bg-amber-50 text-amber-700 border-amber-200"
                 }`}
               >
                 <option value="TURNO">TURNO</option>
                 <option value="DESCANSO">DESCANSO</option>
-              </select>${""}
+              </select>
             </div>
           ))}
           <p className="text-[10px] text-neutral-400 mt-2">Estado en que se encuentra el mesero</p>
