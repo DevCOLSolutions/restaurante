@@ -23,15 +23,20 @@ export function useLogin() {
       if (!loginData) return
 
       const apiUser = loginData.user
+      console.log("[DEBUG] useLogin - usuario logueado:", { userId: apiUser.userId, role: apiUser.role, roles: apiUser.roles })
 
-      login({
-        id: apiUser.userId,
-        name: apiUser.username,
-        email: apiUser.username,
-        role: apiUser.role,
-        restaurantId: apiUser.restauranteId,
-        sucursalId: apiUser.sucursalId,
-      })
+      login(
+        {
+          id: apiUser.userId,
+          name: apiUser.username,
+          email: apiUser.username,
+          role: apiUser.role,
+          roles: apiUser.roles ?? [apiUser.role],
+          restaurantId: apiUser.restauranteId,
+          sucursalId: apiUser.sucursalId,
+        },
+        loginData.expiresAt,
+      )
 
       queryClient.invalidateQueries({ queryKey: ["me"] })
       navigate(getDashboardPathForRole(apiUser.role as UserRole), { replace: true })

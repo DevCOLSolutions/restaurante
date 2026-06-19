@@ -1,4 +1,4 @@
-import { useAuthStore } from "@/store/authStore"
+import { useAuthStore } from "@/core/auth/store"
 
 export const BASE_URL = import.meta.env.VITE_API_URL ?? "/api"
 
@@ -14,19 +14,31 @@ export class ApiRequestError extends Error {
   }
 }
 
+let refreshPromise: Promise<boolean> | null = null
+
+async function performRefresh(): Promise<boolean> {
+  if (refreshPromise) return refreshPromise
+
+  refreshPromise = fetch(`${BASE_URL}/auth/refresh`, {
+    method: "POST",
+    credentials: "include",
+  })
+    .then((res) => res.ok)
+    .catch(() => false)
+    .finally(() => {
+      refreshPromise = null
+    })
+
+  return refreshPromise
+}
+
 export async function apiFetch<T>(
   endpoint: string,
   options?: RequestInit,
 ): Promise<T> {
-  const token = useAuthStore.getState().token
-
   const headers: Record<string, string> = {
     "Content-Type": "application/json",
     ...(options?.headers as Record<string, string>),
-  }
-
-  if (token) {
-    headers["Authorization"] = `Bearer ${token}`
   }
 
   const response = await fetch(`${BASE_URL}${endpoint}`, {
@@ -34,6 +46,19 @@ export async function apiFetch<T>(
     headers,
     credentials: "include",
   })
+
+  if (response.status === 401 && !endpoint.includes("/auth/refresh")) {
+    const refreshed = await performRefresh()
+
+    if (refreshed) {
+      return apiFetch<T>(endpoint, options)
+    }
+
+    useAuthStore.getState().logout()
+    localStorage.removeItem("rest2025-auth")
+    window.location.href = "/login"
+    await new Promise(() => {})
+  }
 
   if (!response.ok) {
     let body: unknown

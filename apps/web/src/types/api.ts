@@ -21,6 +21,7 @@ export interface LoginUser {
   userId: string
   username: string
   role: string
+  roles?: string[]
   restauranteId: string
   sucursalId: string
 }
@@ -104,6 +105,21 @@ export interface Mesa {
   sucursalNombre: string | null
 }
 
+export interface UsuarioItem {
+  id: string
+  email: string
+  roles: string[]
+  name?: string
+  username?: string
+  activo?: boolean
+}
+
+export interface AdministradorSucursal {
+  usuarioId: string
+  nombreUsuario: string
+  email: string
+}
+
 export interface Sucursal {
   id: string
   restauranteId: string
@@ -114,12 +130,16 @@ export interface Sucursal {
   activa: boolean
   creadoEn: string
   actualizadoEn: string | null
+  adminId?: string | null
 }
 
 export interface Zona {
   id: string
+  restauranteId: string
+  sucursalId: string
   nombre: string
   descripcion?: string
+  activa: boolean
 }
 
 export interface Producto {

@@ -26,6 +26,7 @@ export function useCreateSucursal() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["sucursales"] })
+      queryClient.invalidateQueries({ queryKey: ["sucursales-all"] })
     },
   })
 }

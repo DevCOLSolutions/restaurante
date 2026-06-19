@@ -1,6 +1,6 @@
 import { Navigate, Outlet } from "react-router-dom"
 import { useAuthStore } from "@/core/auth/store"
-import { getDashboardPathForRole } from "@/core/auth/utils"
+import { getPrimaryDashboardForRoles } from "@/core/auth/utils"
 import type { UserRole } from "@/core/auth/types"
 
 interface ProtectedRouteProps {
@@ -13,14 +13,16 @@ export function ProtectedRoute({
   children,
 }: ProtectedRouteProps) {
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated)
-  const role = useAuthStore((s) => s.user?.role)
+  const user = useAuthStore((s) => s.user)
 
   if (!isAuthenticated) {
     return <Navigate to="/login" replace />
   }
 
-  if (allowedRoles && role && !allowedRoles.includes(role as UserRole)) {
-    return <Navigate to={getDashboardPathForRole(role as UserRole)} replace />
+  const roles = user?.roles ?? []
+
+  if (allowedRoles && !roles.some((r) => allowedRoles.includes(r as UserRole))) {
+    return <Navigate to={getPrimaryDashboardForRoles(roles)} replace />
   }
 
   return children ? <>{children}</> : <Outlet />

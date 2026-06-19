@@ -1,4 +1,5 @@
-import { createBrowserRouter, Navigate } from "react-router-dom"
+import { createBrowserRouter } from "react-router-dom"
+import { LandingPage } from "@/features/auth/pages/LandingPage"
 import { LoginPage } from "@/features/auth/pages/LoginPage"
 import { RegisterPage } from "@/features/auth/pages/RegisterPage"
 import { LogoutPage } from "@/features/auth/pages/LogoutPage"
@@ -18,6 +19,9 @@ import {
   MeserosPage,
   SucursalesPage,
   SucursalDetailPage,
+  ZonaDetailPage,
+  CrearUsuarioPage,
+  UsuarioDetailPage,
 } from "@/features/global-manager/pages"
 import { AdminSucursalLayout } from "@/features/admin-sucursal/layouts/DashboardLayout"
 import {
@@ -60,7 +64,7 @@ export const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <Navigate to="/login" replace />,
+        element: <LandingPage />,
       },
       {
         path: "login",
@@ -98,6 +102,9 @@ export const router = createBrowserRouter([
           { path: "kitchen", element: <KitchenPage /> },
           { path: "meseros", element: <MeserosPage /> },
           { path: "sucursales", element: <SucursalesPage /> },
+          { path: "sucursales/:id/zonas/:zonaId", element: <ZonaDetailPage /> },
+          { path: "sucursales/:id/crear-usuario", element: <CrearUsuarioPage /> },
+          { path: "sucursales/:id/user/:userId", element: <UsuarioDetailPage /> },
           { path: "sucursales/:id", element: <SucursalDetailPage /> },
           { path: "reports", element: <ReportsPage /> },
           { path: "settings", element: <SettingsPage /> },

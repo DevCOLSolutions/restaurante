@@ -1,5 +1,7 @@
 import { useQuery } from "@tanstack/react-query"
-import { BASE_URL } from "@/lib/apiClient"
+import { apiFetch } from "@/lib/apiClient"
+import { ENDPOINTS } from "@/lib/endpoints"
+import { useAuthStore } from "@/core/auth/store"
 
 export interface MeUser {
   userId: string
@@ -7,6 +9,7 @@ export interface MeUser {
   email: string
   fullName: string
   role: string
+  roles: string[]
   restauranteId: string
   restauranteNombre: string
   sucursalId: string
@@ -18,16 +21,17 @@ interface MeResponse {
 }
 
 export function useMe() {
+  const isAuthenticated = useAuthStore((s) => s.isAuthenticated)
+
   return useQuery({
     queryKey: ["me"],
     queryFn: async () => {
-      const res = await fetch(`${BASE_URL}/auth/me`, {
-        credentials: "include",
-      })
-      if (!res.ok) return null
-      return res.json() as Promise<MeResponse>
+      if (!isAuthenticated) return null
+      const res = await apiFetch<MeResponse>(ENDPOINTS.AUTH.ME)
+      return res
     },
     staleTime: Infinity,
     retry: false,
+    enabled: isAuthenticated,
   })
 }
