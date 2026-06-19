@@ -10,7 +10,6 @@ export function useLogout() {
     stopConnection().catch(() => {})
     logout()
     localStorage.removeItem("rest2025-auth")
-    localStorage.removeItem("rest2025-auth-token")
 
     fetch(`${BASE_URL}${ENDPOINTS.AUTH.LOGOUT}`, {
       method: "POST",

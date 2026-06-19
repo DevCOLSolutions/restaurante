@@ -1,8 +1,8 @@
 import { useState, useMemo } from "react"
-import { Link, useNavigate } from "react-router-dom"
-import { useAuthStore } from "@/core/auth/store"
-import { UserRole } from "@/core/auth/types"
-import { UtensilsCrossed, Mail, Lock, User, AtSign, Eye, EyeOff } from "lucide-react"
+import { Link } from "react-router-dom"
+import { useRegister } from "@/features/auth/hooks/useRegister"
+import { ApiRequestError } from "@/lib/apiClient"
+import { UtensilsCrossed, Mail, Lock, User, AtSign, Eye, EyeOff, Loader2 } from "lucide-react"
 
 function generateSuggestions(fullName: string): string[] {
   const parts = fullName.trim().toLowerCase().split(/\s+/).filter(Boolean)
@@ -25,14 +25,13 @@ function generateSuggestions(fullName: string): string[] {
 }
 
 export function RegisterPage() {
-  const login = useAuthStore((s) => s.login)
-  const navigate = useNavigate()
   const [name, setName] = useState("")
   const [username, setUsername] = useState("")
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [showPassword, setShowPassword] = useState(false)
   const [error, setError] = useState("")
+  const registerMutation = useRegister()
 
   const suggestions = useMemo(() => generateSuggestions(name), [name])
 
@@ -42,14 +41,13 @@ export function RegisterPage() {
       setError("Completa todos los campos")
       return
     }
-    login({
-      id: `user-${Date.now()}`,
-      name,
+    setError("")
+    registerMutation.mutate({
+      username,
       email,
-      role: UserRole.GlobalManager,
-      restaurantId: "rest-001",
+      password,
+      fullName: name,
     })
-    navigate("/app/global-manager")
   }
 
   return (
@@ -145,13 +143,22 @@ export function RegisterPage() {
             </div>
           </div>
 
-          {error && <p className="text-xs text-rose-500">{error}</p>}
+          {(error || registerMutation.error) && (
+            <p className="text-xs text-rose-500">
+              {error ||
+                (registerMutation.error instanceof ApiRequestError
+                  ? (registerMutation.error.body as { message?: string })?.message || registerMutation.error.message
+                  : "Error al registrarse")}
+            </p>
+          )}
 
           <button
             type="submit"
-            className="w-full rounded-xl bg-neutral-900 py-2.5 text-sm font-medium text-white hover:bg-neutral-800 transition-colors"
+            disabled={registerMutation.isPending}
+            className="w-full rounded-xl bg-neutral-900 py-2.5 text-sm font-medium text-white hover:bg-neutral-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
           >
-            Crear cuenta
+            {registerMutation.isPending && <Loader2 size={16} className="animate-spin" />}
+            {registerMutation.isPending ? "Creando cuenta..." : "Crear cuenta"}
           </button>
 
           <p className="text-center text-xs text-neutral-500">

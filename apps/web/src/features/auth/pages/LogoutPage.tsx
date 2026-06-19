@@ -23,7 +23,6 @@ export function LogoutPage() {
     queryClient.clear()
 
     localStorage.removeItem("rest2025-auth")
-    localStorage.removeItem("rest2025-auth-token")
   }, [logout, queryClient])
 
   if (!isAuthenticated) {

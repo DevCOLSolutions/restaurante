@@ -1,33 +1,12 @@
 import { useState } from "react"
-import { Link, useNavigate } from "react-router-dom"
-import { useAuthStore } from "@/core/auth/store"
-import { UserRole } from "@/core/auth/types"
-import { getDashboardPathForRole } from "@/core/auth/utils"
-import { appConfig } from "@/core/config"
+import { Link } from "react-router-dom"
+
 import { useLogin } from "@/features/auth/hooks/useLogin"
 import { ApiRequestError } from "@/lib/apiClient"
 import { UtensilsCrossed, Mail, Lock, Eye, EyeOff, Loader2 } from "lucide-react"
-import { Card, CardContent } from "@/shared/ui/Card"
 
-const roleLabels: Record<string, string> = {
-  GlobalManager: "Global Manager",
-  AdminSucursal: "Admin Sucursal",
-  Mesero: "Mesero",
-  Cocinero: "Cocinero",
-  ConsumidorFinal: "Consumidor Final",
-}
-
-const roleIcons: Record<string, string> = {
-  GlobalManager: "👔",
-  AdminSucursal: "🏢",
-  Mesero: "🍽️",
-  Cocinero: "👨‍🍳",
-  ConsumidorFinal: "👤",
-}
 
 export function LoginPage() {
-  const login = useAuthStore((s) => s.login)
-  const navigate = useNavigate()
   const [username, setUsername] = useState("")
   const [password, setPassword] = useState("")
   const [showPassword, setShowPassword] = useState(false)
@@ -44,10 +23,7 @@ export function LoginPage() {
     loginMutation.mutate({ username, password })
   }
 
-  const handleDevLogin = (role: UserRole) => {
-    login({ id: `dev-${role}`, name: `Developer (${role})`, email: `dev@${role.toLowerCase()}.rest`, role, restaurantId: "rest-001" })
-    navigate(getDashboardPathForRole(role))
-  }
+
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-neutral-50 px-4">
@@ -122,27 +98,7 @@ export function LoginPage() {
           </p>
         </form>
 
-        {appConfig.roleSelector && (
-          <Card className="border-dashed border-neutral-300">
-            <CardContent>
-              <p className="mb-3 text-center text-xs font-semibold uppercase tracking-wider text-neutral-500">
-                🧪 Modo Desarrollo
-              </p>
-              <div className="grid grid-cols-2 gap-2">
-                {Object.values(UserRole).map((role) => (
-                  <button
-                    key={role}
-                    onClick={() => handleDevLogin(role)}
-                    className="flex flex-col items-center gap-1 rounded-xl border border-neutral-200 bg-white p-3 text-sm font-medium text-neutral-700 transition-all hover:border-neutral-400 hover:shadow-sm active:scale-95"
-                  >
-                    <span className="text-lg">{roleIcons[role]}</span>
-                    <span>{roleLabels[role]}</span>
-                  </button>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-        )}
+       
       </div>
     </div>
   )
